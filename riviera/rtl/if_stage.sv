@@ -6,26 +6,26 @@ module if_stage(
 
 	// IM setup inputs
 	input logic [`IM_DATA_BYTES-1:0]i_wen,
-	input logic [`W_32-1:0]		i_wdata,
+	input logic [`RNG_32]		i_wdata,
 
 	// ID-relative inputs
 	input logic 			i_id_ready,	// is ID stage ready?	
 	input logic			i_is_jump,	// jump instr. in ID
-	input logic [`W_64-1:0]		i_id_PC,	// jump target
+	input logic [`RNG_64]		i_id_PC,	// jump target
 
 	// EX-relative inputs
 	input logic			i_PCsrc,	// branch taken in EX
-	input logic [`W_64-1:0]		i_ex_PC,	// branch target	
+	input logic [`RNG_64]		i_ex_PC,	// branch target	
 
 	// ID-relative outputs
-	output logic [`W_32-1:0]	o_if_instr,	// instruction out
-	output logic [`W_64-1:0]	o_if_pc		// PC out	
+	output logic [`RNG_32]		o_if_instr,	// instruction out
+	output logic [`RNG_64]		o_if_pc		// PC out	
 );
 
-	logic [`W_64-1:0]		if_pc;		// local pc
-	logic [`W_32-1:0]		if_instr;	// local instr
+	logic [`RNG_64]			if_pc;		// local pc
+	logic [`RNG_32]			if_instr;	// local instr
 	logic				if_stg_valid;   // validity of IF stage
-	logic [`W_64-1:0]		fetch_addr;	// address to fetch
+	logic [`RNG_64]			fetch_addr;	// address to fetch
 	logic [3:0]			fetch_selector; // select addr to fetch
 
 	instr_mem 
