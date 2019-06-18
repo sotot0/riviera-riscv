@@ -1,6 +1,8 @@
 `include "defines.sv"
 
-// Packed Struct for internal connection between ID - EX
+package struct_pckg;
+
+// Packed Struct for internal connection between ID -> EX -> MEM -> WB
 typedef struct packed {
 	
 	logic [`RNG_64] 		rs1;
@@ -23,4 +25,6 @@ typedef struct packed {
 	logic [`RNG_WR_ADDR_REG]	rf_wr_addr;
 	logic [`RNG_64]			rf_wr_data;
 	
-} id2all_struct;
+} interconnection_struct;
+
+endpackage
