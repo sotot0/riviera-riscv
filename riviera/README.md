@@ -4,9 +4,8 @@ This project is an RISC-V 64IC CPU implementation with 5-stage pipeline on Syste
 It is a part of the graduate course CS523: Digital Circuit Design Lab Using EDA Tools (Spring 2019) of CSD, UOC.
 
 Extentions of RISC-V:
-    I : Base Integer Instruction Set
-    C : Compressed   Instruction Set
-
+    I -> Base Integer Instruction Set.
+    C -> Compressed   Instruction Set.
 
 Members of the project:
   - Damianos Astrinos
