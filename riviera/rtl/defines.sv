@@ -1,46 +1,65 @@
  // File that includes all the defines of the Risc-V implementation
 `ifndef DEFINES_SV
 `define DEFINES_SV
-
-`define W_64			64
-`define W_32 			32
-`define RNG_64			`W_64-1:0
-`define RNG_32			`W_32-1:0
+ 
+ //
+`define W_64				64
+`define W_32 				32
+`define RNG_64				`W_64-1:0
+`define RNG_32				`W_32-1:0
 
  // IF-relative defines
-`define IM_DATA_BYTES		`W_32/8			// Total bytes of a IM word
-`define IM_DEPTH		2048			// Total words of IM
-`define IM_ADDR			$clog2(`IM_DEPTH)	// Address size of IM
-
+`define IM_DATA_BYTES			`W_32/8			// Total bytes of a IM word
+`define IM_DEPTH			2048			// Total words of IM
+`define IM_ADDR				$clog2(`IM_DEPTH)	// Address size of IM
 
  // ID-relative defines
-`define ALEN			5			// Register address size
-`define DLEN			64			// Register data size
-`define RNG_WR_ADDR_REG		`ALEN-1:0
-`define RNG_WR_DATA_REG		`DLEN-1:0
+`define ALEN				5			// Register address size
+`define DLEN				64			// Register data size
+`define RNG_WR_ADDR_REG			`ALEN-1:0
+`define RNG_WR_DATA_REG			`DLEN-1:0
+
+ // Instruction format relative
+`define R_FORM				2'b00			// R Format
+`define JU_FORM				2'b01			// J, U Format
+`define I_FORM				2'b10			// I Format
+`define BS_FORM				2'b11			// B, S Format
 
  // Instruction Field Ranges
-`define RNG_OP			6:0
-`define RNG_RD			11:7
-`define RNG_RS1			19:15
-`define RNG_RS2			24:20
-`define RNG_IMM12_I		31:20
-`define RNG_IMM12_BS		{31:25,11:7}
-`define RNG_IMM20		31:12
-`define RNG_F3			14:12
-`define RNG_F7			31:25
+`define RNG_OP				6:0			// opcode field
+`define RNG_RD				11:7			// rd reg field
+`define RNG_RS1				19:15			// rs1 reg field
+`define RNG_RS2				24:20			// rs2 reg field
+`define RNG_IMM12_I			31:20			// imm12 field on I format instructions
+`define RNG_IMM12_BS			{31:25,11:7}		// imm12 field on B, S format instructions
+`define RNG_IMM20			31:12			// imm20 field on J, U format instructions
+`define RNG_F3				14:12			// funct3 field on I, R, B, S format instructions
+`define RNG_F7				31:25			// funct7 filed on R format instructions
 
-// ALU OP
-`define DO_ADD			4'b0000
-`define DO_SUB			4'b0001
-`define DO_SLL			4'b0010
-`define DO_SLT			4'b0011
-`define DO_SLTU			4'b0100
-`define DO_XOR			4'b0101
-`define DO_SRL			4'b0110
-`define DO_SRA			4'b0111
-`define DO_OR			4'b1000
-`define DO_AND			4'b1001
+ // MEM-relative defines
+ // extention							// defines formem_ext on interconnection struct
+`define SIGNED				0			
+`define UNSIGNED			1
+
+ // size							// values for mem_req_unit on interconnection struct
+`define B				2'b00			// byte
+`define HW				2'b01			// half word
+`define W				2'b10			// word
+`define DW				2'b11			// double word
+
+ // ALU OP
+ // 32bit
+`define DO_ADD				4'b0000
+`define DO_SUB				4'b0001
+`define DO_SLL				4'b0010
+`define DO_SLT				4'b0011
+`define DO_SLTU				4'b0100
+`define DO_XOR				4'b0101
+`define DO_SRL				4'b0110
+`define DO_SRA				4'b0111
+`define DO_OR				4'b1000
+`define DO_AND				4'b1001
+`define DO_LUI				4'b1010
 
  // OPCODES
  
@@ -134,7 +153,6 @@
 `define F7_SLLW_64			7'b0000000
 `define F7_SRLW_64			7'b0000000
 `define F7_SRAW_64			7'b0100000
-
 
 
 `endif

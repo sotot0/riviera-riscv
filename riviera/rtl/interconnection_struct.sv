@@ -5,6 +5,8 @@ package struct_pckg;
 // Packed Struct for internal connection between ID -> EX -> MEM -> WB
 typedef struct packed {
 	
+	logic [1:0]			format;	
+	
 	logic [`RNG_64] 		rs1;
 	logic [`RNG_64] 		rs2;
 	
@@ -25,6 +27,10 @@ typedef struct packed {
 	logic [`RNG_WR_ADDR_REG]	rf_wr_addr;
 	logic [`RNG_64]			rf_wr_data;
 	
+	logic 				is_valid;
+	logic 				is_64W;		// take the 32bit result of ALU and sign-extend it with 32bit
+	logic [1:0]			mem_req_unit;	// byte, halfword, word, double word
+	logic 				mem_ext;	// signed or unsigned 
 } interconnection_struct;
 
 endpackage
