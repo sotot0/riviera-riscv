@@ -73,8 +73,129 @@ module id_stage(
 			
 			end
 
-			`ALU: 				begin
-			
+			`ALU: begin
+
+				o_id2all.alu_en		= 1'b1;
+				o_id2all.alu_src	= 1'b0;
+				o_id2all.pc		= i_if_pc;
+				o_id2all.imm_gend	= 0;			// not needed
+				o_id2all.is_branch	= 1'b0;
+				o_id2all.mem_rd		= 1'b0;
+				o_id2all.mem_wr		= 1'b0;
+				o_id2all.mem_to_reg	= 1'b1;
+				o_id2all.rf_wr		= 1'b1;
+				o_id2all.rf_wr_addr	= i_if_instr[`RNG_RD];
+				o_id2all.rf_wr_data	= 0; 			// unknown yet
+				
+				unique case(i_if_instr[`RNG_F3])
+
+					`F3_ADD_SUB: begin
+						unique case(i_if_instr[31:30])
+
+							2'b00: begin
+								if(i_if_instr[29:25] != 5'b00000) begin
+									// invalid instruction
+								end
+								else begin
+									o_id2all.alu_op = `DO_ADD;
+								end
+							end
+
+							2'b01: begin
+								if(i_if_instr[29:25] != 5'b00000) begin
+									// invalid instruction
+								end
+								else begin
+									o_id2all.alu_op = `DO_SUB;
+								end
+							end
+
+							default:; // invalid instruction
+
+						endcase
+					end
+
+					`F3_SLL: begin
+						if(i_if_instr[`RNG_F7] != `F7_SLL) begin
+							// invalid instruction
+						end
+						else begin
+							o_id2all.alu_op = `DO_SLL;
+						end
+					end
+
+					`F3_SLT: begin
+						if(i_if_instr[`RNG_F7] != `F7_SLT) begin
+							// invalid instruction
+						end
+						else begin
+							o_id2all.alu_op = `DO_SLT;
+						end
+					end
+
+					`F3_SLTU: begin
+						if(i_if_instr[`RNG_F7] != `F7_SLTU) begin
+							// invalid instruction
+						end
+						else begin
+							o_id2all.alu_op = `DO_SLTU;
+						end
+					end
+
+					`F3_XOR: begin
+						if(i_if_instr[`RNG_F7] != `F7_XOR) begin
+							// invalid instruction
+						end
+						else begin
+							o_id2all.alu_op = `DO_XOR;
+						end
+					end
+
+					`F3_SRL_SRA: begin
+						unique case(i_if_instr[31:30])
+							2'b00: begin
+								if(i_if_instr[29:25] != 5'b00000) begin
+									// invalid instruction
+								end
+								else begin
+									o_id2all.alu_op = `DO_SRL;
+								end
+							end
+ 
+							2'b01: begin
+								if(i_if_instr[29:25] != 5'b00000) begin
+									// invalid instruction
+								end
+								else begin
+									o_id2all.alu_op = `DO_SRA;
+								end
+							end
+
+							default:; // invalid instruction
+
+                                                endcase
+					end
+
+					`F3_OR: begin
+						if(i_if_instr[`RNG_F7] != `F7_OR) begin
+							// invalid instruction
+						end
+						else begin
+							o_id2all.alu_op = `DO_OR;
+						end
+					end
+
+					`F3_AND: begin
+						if(i_if_instr[`RNG_F7] != `F7_AND) begin
+							// invalid instruction
+						end
+						else begin
+							o_id2all.alu_op = `DO_AND;
+						end
+					end
+					default:; // invalid instruction
+				endcase
+
 			end
 
 			`LWU_LD_64: 			begin
@@ -93,6 +214,7 @@ module id_stage(
 			
 			end
 
+			default:; // invalid instruction
 		endcase	
 
 	end

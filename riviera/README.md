@@ -1,2 +1,1 @@
-This is a project.
-Risc-V implemenatation.
+graviera kai ksero pswmi
