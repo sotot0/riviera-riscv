@@ -8,6 +8,6 @@ Extentions of RISC-V:
     C -> Compressed   Instruction Set.
 
 Members of the project:
-  - Damianos Astrinos
+  - Damianakis Astrinos
   - Totomis Sotiris
   - Mastorakis Iasonas
