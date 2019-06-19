@@ -1,5 +1,8 @@
 import struct_pckg :: interconnection_struct;
 
+//TODO : INVALID INSTRUCTIONS BECAUSE OF REGS AND IMMEDIATES ( NOT ONLY FROM
+//OPCODE , FUNCT3 AND FUNCT&
+
 module id_stage(
 	input logic			clk,
 	input logic			rst_n,
@@ -8,15 +11,27 @@ module id_stage(
 	input logic [`RNG_32]		i_if_instr,
 	input logic [`RNG_64]		i_if_pc,
 
+	// EX-relative input
+	input logic			i_ex_ready,
+	input logic			i_ex_flush_id,
+
 	// WB-relative inputs
 	input logic [`RNG_WR_ADDR_REG]	i_wb_wr_reg_addr,	// address of the register to write
 	input logic [`RNG_WR_DATA_REG]	i_wb_wr_reg_data,	// data to write on register
 	input logic 			i_wb_wr_reg_en,		// write enable to RF
 	
+	// to IF
+	output logic			o_id_ready,
+
+	// to EX
+	output logic 			o_id_reg
 	// Packed struct to all from now on	
-	output interconnection_struct	o_id2all
+	//output interconnection_struct	o_id2all
 );
-	
+
+	logic				valid_id;	
+	interconnection_struct 		o_id2all;
+
 	// make and connect an instance of IR
 	regfile_2r1w
 	#(
@@ -64,26 +79,109 @@ module id_stage(
 				o_id2all.rf_wr_addr     = i_if_instr[`RNG_RD];  // reg to write the result
 				o_id2all.rf_wr_data     = 0;                    // unknown yet
 				o_id2all.is_valid       = 1'b1;                 // assume that the instruction is valid
-				o_id2all.is_64W         = 1'b0;
-				o_id2all.alu_op         = `DO_LUI;
-				
-			
+				o_id2all.is_64W         = 1'b1;
+				o_id2all.alu_op         = `DO_LUI;	
 			end
 			
 			`AUIPC: begin
-			
+
+				o_id2all.format         = `JU_FORM;              // load instr is I format       
+ 				o_id2all.alu_en         = 1'b1;
+				o_id2all.alu_src        = 1'b1;                 // the second arg of ALU is an immediate
+				o_id2all.pc             = i_if_pc;
+				o_id2all.is_branch      = 1'b0;                 // not branch
+				o_id2all.mem_rd         = 1'b0;                 // not load from mem
+				o_id2all.mem_wr         = 1'b0;                 // not store to mem
+				o_id2all.mem_to_reg     = 1'b1;                 // write the result to RF
+				o_id2all.rf_wr          = 1'b1;                 // enable write to RF
+				o_id2all.rf_wr_addr     = i_if_instr[`RNG_RD];  // reg to write the result
+				o_id2all.rf_wr_data     = 0;                    // unknown yet
+				o_id2all.is_valid       = 1'b1;                 // assume that the instruction is valid
+				o_id2all.is_64W         = 1'b1;
+				o_id2all.alu_op         = `DO_AUIPC;
 			end
 			
 			`JAL: begin
-				
+
+				o_id2all.format		= `JU_FORM;
+				o_id2all.alu_en		= 1'b1;
+				o_id2all.alu_src	= 1'b1;
+				o_id2all.pc		= i_if_pc;
+				o_id2all.is_branch	= 1'b1;			// but unconditional 
+				o_id2all.mem_rd		= 1'b0;
+				o_id2all.mem_wr		= 1'b0;
+				o_id2all.mem_to_reg	= 1'b1;
+				o_id2all.rf_wr		= 1'b1;
+				o_id2all.rf_wr_addr	= i_if_instr[`RNG_RD];
+				o_id2all.rf_wr_data	= 0;			// unknown yet
+				o_id2all.is_valid	= 1'b1;
+				o_id2all.is_64W		= 1'b0;
+				o_id2all.alu_op		= `DO_ADD;		// pc+4 or +2 TODO : dependent signal for comprs'd. The calc. of jump to br unit
 			end
 			
 			`JALR: begin
-			
+				if( i_if_instr[`RNG_F3] != `F3_JALR ) begin
+					o_id2all.is_valid = 1'b0;
+				end
+				else begin 
+					o_id2all.format		= `I_FORM;
+					o_id2all.alu_en		= 1'b1;
+					o_id2all.alu_src	= 1'b1;
+					o_id2all.pc		= i_if_pc;
+					o_id2all.is_branch	= 1'b1;		// but unconditional
+					o_id2all.mem_rd		= 1'b0;
+					o_id2all.mem_wr		= 1'b0;
+					o_id2all.rf_wr		= 1'b1;
+					o_id2all.rf_wr_addr	= i_if_instr[`RNG_RD];
+					o_id2all.rf_wr_data	= 0;		// unknown yet
+					o_id2all.is_valid	= 1'b1;
+					o_id2all.is_64W		= 1'b0;
+					o_id2all.alu_op		= `DO_ADD;	// pc+4 or +2 TODO : dependent signal for comprs'd. The calc. of jump to br unit
+				end
 			end
 			
 			`BRANCH: begin
-			
+				o_id2all.format		= `BS_FORM;
+				o_id2all.alu_en		= 1'b1;
+				o_id2all.alu_src	= 1'b0;
+				o_id2all.pc		= i_if_pc;
+				o_id2all.is_branch	= 1'b1;
+				o_id2all.mem_rd		= 1'b0;
+				o_id2all.mem_wr		= 1'b0;
+				o_id2all.rf_wr		= 1'b0;
+				o_id2all.rf_wr_addr	= 0;
+				o_id2all.rf_wr_data	= 0;
+				o_id2all.is_valid	= 1'b1;
+				o_id2all.is_64W		= 1'b0;
+
+				unique case(i_if_instr[`RNG_F3])
+
+					`F3_BEQ: begin
+						o_id2all.alu_op	= `DO_SUB;
+					end
+
+					`F3_BNE: begin
+						o_id2all.alu_op = `DO_SUB;
+					end
+
+					`F3_BLTU: begin
+						o_id2all.alu_op = `DO_SUB;
+					end
+
+					`F3_BGEU: begin
+						o_id2all.alu_op = `DO_SUB;
+					end
+
+					`F3_BGE: begin
+						o_id2all.alu_op = `DO_BGE;
+					end
+
+					`F3_BLT: begin
+						o_id2all.alu_op = `DO_BLT;
+					end	
+
+					default: o_id2all.is_valid = 1'b0;
+				endcase
 			end
 			
 			`LOAD: begin
@@ -91,7 +189,6 @@ module id_stage(
 				o_id2all.alu_en         = 1'b1;   
 				o_id2all.alu_src        = 1'b1;                 // the second arg of ALU is an immediate
 				o_id2all.pc             = i_if_pc;
-	//			o_id2all.imm_gend       = 1'b0;               // not needed
 				o_id2all.is_branch      = 1'b0;                 // not branch
 				o_id2all.mem_rd         = 1'b1;                 // not load from mem
 				o_id2all.mem_wr         = 1'b0;                 // not store to mem
@@ -149,7 +246,7 @@ module id_stage(
 				o_id2all.rf_wr          = 1'b0;                 // enable write to RF
 				o_id2all.rf_wr_addr     = 0;			// reg to write the result
 				o_id2all.rf_wr_data     = 0;                    // unknown yet
-				o_id2all.is_valid        = 1'b1;                 // assume that the instruction is valid
+				o_id2all.is_valid       = 1'b1;                 // assume that the instruction is valid
 				o_id2all.is_64W         = 1'b0;
 				o_id2all.alu_op         = `DO_ADD;
 				o_id2all.mem_ext	= `SIGNED;
@@ -174,7 +271,66 @@ module id_stage(
 			end
 
 			`IMM: begin
-			
+				o_id2all.format		=`I_FORM;
+				o_id2all.alu_en		= 1'b1;
+				o_id2all.alu_src	= 1'b1;
+				o_id2all.pc		= i_if_pc;
+				o_id2all.is_branch	= 1'b0;
+				o_id2all.mem_rd		= 1'b0;
+				o_id2all.mem_wr		= 1'b0;
+				o_id2all.mem_to_reg	= 1'b1;
+				o_id2all.rf_wr		= 1'b1;
+				o_id2all.rf_wr_addr	= i_if_instr[`RNG_RD];
+				o_id2all.rf_wr_data	= 1'b0;			// unknown yet
+				o_id2all.is_valid	= 1'b1;
+				o_id2all.is_64W		= 1'b0;
+
+				unique case(i_if_instr[`RNG_F3])
+
+					`F3_ADDI: begin
+						o_id2all.alu_op = `DO_ADD;
+					end
+
+					`F3_SLTI: begin
+						o_id2all.alu_op = `DO_SLT;
+					end
+
+					`F3_SLTIU: begin
+						o_id2all.alu_op = `DO_SLTU;
+					end
+
+					`F3_XORI: begin
+						o_id2all.alu_op = `DO_XOR;
+					end
+
+					`F3_ORI: begin
+						o_id2all.alu_op = `DO_OR;
+					end
+
+					`F3_ANDI: begin
+						o_id2all.alu_op = `DO_AND;
+					end
+
+					`F3_SLLI: begin
+						o_id2all.alu_op = `DO_SLL;
+					end
+
+					`F3_SR: begin
+						unique case(i_if_instr[`RNG_F7])
+							`F7_SRLI: begin
+								o_id2all.alu_op = `DO_SRL;
+							end
+
+							`F7_SRAI: begin
+								o_id2all.alu_op = `DO_SRA;
+							end
+
+							default: o_id2all.is_valid = 1'b0;
+						endcase
+					end
+					
+					default: o_id2all.is_valid = 1'b0;
+				endcase
 			end
 
 			`ALU: begin
@@ -182,7 +338,6 @@ module id_stage(
 				o_id2all.alu_en		= 1'b1;
 				o_id2all.alu_src	= 1'b0;			// the second arg of ALU is not immidiate
 				o_id2all.pc		= i_if_pc;
-	//			o_id2all.imm_gend	= 0;			// not needed
 				o_id2all.is_branch	= 1'b0;			// not branch
 				o_id2all.mem_rd		= 1'b0;			// not load from mem
 				o_id2all.mem_wr		= 1'b0;			// not store to mem
@@ -196,24 +351,14 @@ module id_stage(
 				unique case(i_if_instr[`RNG_F3])
 
 					`F3_ADD_SUB: begin
-						unique case(i_if_instr[31:30])
+						unique case(i_if_instr[`RNG_F7])
 
-							2'b00: begin
-								if(i_if_instr[29:25] != 5'b00000) begin
-									o_id2all.is_valid = 1'b0;	// invalid instruction
-								end
-								else begin
+							`F7_ADD: begin
 									o_id2all.alu_op = `DO_ADD;
-								end
 							end
 
-							2'b01: begin
-								if(i_if_instr[29:25] != 5'b00000) begin
-									o_id2all.is_valid = 1'b0;       // invalid instruction
-								end
-								else begin
+							`F7_SUB: begin
 									o_id2all.alu_op = `DO_SUB;
-								end
 							end
 
 							default: o_id2all.is_valid = 1'b0;       // invalid instruction
@@ -305,15 +450,118 @@ module id_stage(
 			end
 
 			`LWU_LD_64: begin
+				o_id2all.format		= `I_FORM;
+				o_id2all.alu_en		= 1'b1;
+				o_id2all.alu_src	= 1'b1;
+				o_id2all.pc		= i_if_pc;
+				o_id2all.is_branch	= 1'b0;
+				o_id2all.mem_rd		= 1'b1;
+				o_id2all.mem_wr		= 1'b0;
+				o_id2all.mem_to_reg	= 1'b1;
+				o_id2all.rf_wr		= 1'b1;
+				o_id2all.rf_wr_addr	= i_if_instr[`RNG_RD];
+				o_id2all.rf_wr_data	= 0;
+				o_id2all.is_valid	= 1'b1;
+				o_id2all.is_64W		= 1'b1;
+				o_id2all.alu_op		= `DO_ADD;
 
+				unique case(i_if_instr[`RNG_F3])
+
+					`F3_LWU_64: begin
+						o_id2all.mem_req_unit = `W;
+						o_id2all.mem_ext = `UNSIGNED;						
+					end
+
+					`F3_LD_64: begin
+						o_id2all.mem_req_unit = `DW;
+						o_id2all.mem_ext = `SIGNED;
+					end
+
+					default: o_id2all.is_valid = 1'b0;
+				endcase
 			end
 
 			`SD_64:	begin
-			
+
+				if(i_if_instr[`RNG_F3] != 3'b011) begin
+					o_id2all.is_valid = 1'b0;
+				end
+				else begin
+					o_id2all.format		= `BS_FORM;
+					o_id2all.alu_en		= 1'b1;
+					o_id2all.alu_src	= 1'b1;
+					o_id2all.pc		= i_if_pc;
+					o_id2all.is_branch	= 1'b0;
+					o_id2all.mem_rd		= 1'b0;
+					o_id2all.mem_wr		= 1'b1;
+					o_id2all.rf_wr		= 1'b0;
+					o_id2all.rf_wr_addr	= 0;
+					o_id2all.rf_wr_data	= 0;
+					o_id2all.is_valid	= 1'b1;
+					o_id2all.is_64W		= 1'b1;
+					o_id2all.alu_op		= `DO_ADD;
+					o_id2all.mem_req_unit	= `DW;
+					o_id2all.mem_ext	= `SIGNED;	
+				end
 			end
 
-			`ADDIW_SLLIW_SRLIW_SRAIW_64: begin
+			`ADDIW_SLLIW_SRLIW_SRAIW_64: begin				
 
+				o_id2all.format		= `I_FORM;
+				o_id2all.alu_en		= 1'b1;
+				o_id2all.alu_src	= 1'b1;
+				o_id2all.pc		= i_if_pc;
+				o_id2all.is_branch	= 1'b0;
+				o_id2all.mem_rd		= 1'b0;
+				o_id2all.mem_wr		= 1'b0;
+				o_id2all.rf_wr		= 1'b1;
+				o_id2all.rf_wr_addr	= i_if_instr[`RNG_RD];
+				o_id2all.rf_wr_data	= 0;
+				o_id2all.is_valid	= 1'b1;
+				o_id2all.is_64W		= 1'b1;
+
+				unique case(i_if_instr[`RNG_F3])
+
+					`F3_ADDIW_64: begin
+
+						o_id2all.alu_op = `DO_ADD;
+					end
+
+					`F3_SLLIW_64: begin
+
+						if(i_if_instr[`RNG_F7]) begin
+
+							o_id2all.is_valid = 1'b0;
+						end
+						else begin
+
+							o_id2all.alu_op = `DO_SLL;
+						end
+					end
+
+					`F3_SRLIW_SRAIW_64: begin
+
+						unique case(i_if_instr[`RNG_F7])
+
+							`F7_SRLIW_64: begin
+
+								o_id2all.alu_op	= `DO_SRL;
+							end
+
+							`F7_SRAIW_64: begin
+
+								o_id2all.alu_op = `DO_SRA;
+
+							end
+
+							default: o_id2all.is_valid = 1'b1;
+
+						endcase
+					end
+
+
+					default: o_id2all.is_valid = 1'b0;
+				endcase
 			end
 
 			`ALU_64: begin
@@ -321,7 +569,6 @@ module id_stage(
 				o_id2all.alu_en         = 1'b1;
                                 o_id2all.alu_src        = 1'b0;                 // the second arg of ALU is not immidiate
                                 o_id2all.pc             = i_if_pc;
-        //                        o_id2all.imm_gend       = 0;                    // not needed
                                 o_id2all.is_branch      = 1'b0;                 // not branch
                                 o_id2all.mem_rd         = 1'b0;                 // not load from mem
                                 o_id2all.mem_wr         = 1'b0;                 // not store to mem
@@ -403,5 +650,27 @@ module id_stage(
 		endcase			
 	end
 
-endmodule
+	assign o_id_ready	= i_ex_ready; // && TODO stall control???
+	assign valid_id		= o_id_ready;
+	assign valid_instr	= o_id2all.is_valid;
 
+	always_ff @(posedge clk, negedge rst_n) begin
+
+		if(~rst_n) begin
+
+			o_id_reg <= 0;
+		end
+		else begin
+			if(valid_id) begin
+	
+				o_id_reg <= o_id2all;
+			end
+
+			if(i_ex_flush_id) begin
+
+				o_id_reg <= 0;
+
+			end
+		end	
+	end
+endmodule

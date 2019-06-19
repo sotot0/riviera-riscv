@@ -60,8 +60,11 @@
 `define DO_OR				4'b1000
 `define DO_AND				4'b1001
 `define DO_LUI				4'b1010
-
- // OPCODES
+`define DO_AUIPC			4'b1011
+`define DO_BGE				4'b1100
+`define DO_BLT				4'b1101
+ 
+// OPCODES
  
  // RV32I Base OPCODES
 `define LUI				7'b0110111
