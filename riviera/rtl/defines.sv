@@ -82,6 +82,10 @@
 `define F3_BGE				3'b101
 `define F3_BLTU				3'b110
 `define F3_BGEU				3'b111
+`define BEQ				2'b00
+`define BNE				2'b01
+`define BLTU				2'b10
+`define BGEU				2'b11
 
  // Loads
 `define LOAD				7'b0000011

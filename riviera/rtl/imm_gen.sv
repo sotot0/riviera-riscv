@@ -17,7 +17,12 @@ module imm_gen (
 			end
 		
 			`I_FORM: begin
-				o_imm = 64'(signed'(i_instr[`RNG_IMM12_I]));
+				if((i_instr[`RNG_OP]==`IMM) && (i_instr[`RNG_F3]==`F3_SLLI || i_instr[`RNG_F3]==`F3_SR)) begin
+					o_imm = 64'(signed'({i_instr[25] ,i_instr[`RNG_IMM12_I]})); //SLLI, SRLI, SRAI shamt=6bits	
+				end
+				else begin
+					o_imm = 64'(signed'(i_instr[`RNG_IMM12_I]));
+				end
 			end
 
 			`BS_FORM: begin

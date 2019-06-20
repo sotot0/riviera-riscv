@@ -18,19 +18,26 @@ typedef struct packed {
 	
 	logic [`RNG_64]			imm_gend;
 	logic 				is_branch;
-	
+	logic 				is_compr;
+	logic [1:0]                     branch_type;
+
 	logic				mem_rd;
 	logic				mem_wr;			
-	logic 				mem_to_reg;
+	logic                           mem_addr;
+	logic [`RNG_64]			mem_data;
 	
+	logic 				mem_to_reg;
 	logic				rf_wr;
 	logic [`RNG_WR_ADDR_REG]	rf_wr_addr;
 	logic [`RNG_64]			rf_wr_data;
 	
 	logic 				is_valid;
-	logic 				is_64W;		// take the 32bit result of ALU and sign-extend it with 32bit
+	logic 				en_sign_ext;	// take the 32bit result of ALU and sign-extend it with 32bit
 	logic [1:0]			mem_req_unit;	// byte, halfword, word, double word
-	logic 				mem_ext;	// signed or unsigned 
+	logic 				mem_ext;	// signed or unsigned
+
+        
+     
 } interconnection_struct;
 
 endpackage
