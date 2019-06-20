@@ -6,7 +6,7 @@ It is a part of the graduate course CS523: Digital Circuit Design Lab Using EDA 
 Extentions of RISC-V:
 
     64I -> 64bit Base Integer Instruction Set.
-    C -> Compressed   Instruction Set.
+    C -> Compressed Instruction Set.
 
 Members of the project:
   - Damianakis Astrinos
