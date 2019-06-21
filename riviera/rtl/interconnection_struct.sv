@@ -23,8 +23,10 @@ typedef struct packed {
 
 	logic				mem_rd;
 	logic				mem_wr;			
-	logic                           mem_addr;
+	logic [7:0]			mem_wr_en;
+	logic [`RNG_64]                 mem_addr;
 	logic [`RNG_64]			mem_data;
+	logic				dm_mux_sel;
 	
 	logic 				mem_to_reg;
 	logic				rf_wr;
@@ -33,7 +35,7 @@ typedef struct packed {
 	
 	logic 				is_valid;
 	logic 				en_sign_ext;	// take the 32bit result of ALU and sign-extend it with 32bit
-	logic [1:0]			mem_req_unit;	// byte, halfword, word, double word
+	logic [3:0]			mem_req_unit;	// byte, halfword, word, double word
 	logic 				mem_ext;	// signed or unsigned
 
         

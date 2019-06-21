@@ -42,10 +42,10 @@
 `define UNSIGNED			1
 
  // size							// values for mem_req_unit on interconnection struct
-`define B				2'b00			// byte
-`define HW				2'b01			// half word
-`define W				2'b10			// word
-`define DW				2'b11			// double word
+`define B				4'b0001			// byte
+`define HW				4'b0010			// half word
+`define W				4'b0100			// word
+`define DW				4'b1000			// double word
 
  // ALU OP
  // 32bit

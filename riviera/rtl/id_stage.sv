@@ -9,11 +9,13 @@ module id_stage(
 	
 	// IF-relative inputs
 	input logic [`RNG_32]		i_if_instr,
+	input logic			i_if_valid_instr,
 	input logic [`RNG_64]		i_if_pc,
 
 	// EX-relative input
 	input logic			i_ex_ready,
-	input logic			i_ex_flush_id,
+	input logic			i_ex_branch_taken,
+	input logic			i_ex_jump_taken,
 
 	// WB-relative inputs
 	input logic [`RNG_WR_ADDR_REG]	i_wb_wr_reg_addr,	// address of the register to write
@@ -29,7 +31,6 @@ module id_stage(
 	//output interconnection_struct	id2all
 );
 
-	logic				valid_id;	
 	interconnection_struct 		id2all;
 
 	// make and connect an instance of IR
@@ -62,15 +63,44 @@ module id_stage(
 	// decode the instruction
 	always_comb begin
 		
+		id2all.format		= `I_FORM;
+		// rs1 is given but we don't care
+		// rs2 is given but we don't care
+		id2all.alu_op		= 0;
+		id2all.alu_en		= 0;
+		id2all.alu_src		= 0;
+		id2all.pc		= 0;
+		// imm_gend is given         -//-
+		id2all.is_branch	= 0;
+		id2all.is_compr		= 0;
+		id2all.branch_type	= 0;
+		id2all.mem_rd		= 0;
+		id2all.mem_wr		= 0;
+		id2all.mem_wr_en	= 0;
+		id2all.mem_addr		= 0;
+		id2all.mem_data		= 0;
+		id2all.dm_mux_sel	= 0;
+		id2all.mem_to_reg	= 0;
+		id2all.rf_wr		= 0;
+		id2all.rf_wr_addr	= 0;
+		id2all.rf_wr_data	= 0;
+		id2all.is_valid		= 0;
+		id2all.en_sign_ext	= 0;
+		id2all.mem_req_unit	= 0;
+		id2all.mem_ext		= 0;
+		
+		if(i_if_valid_instr & ~i_ex_branch_taken & ~i_ex_jump_taken) begin  // iff instr is valid then decode.
+					    // else forward the
+					    // pre-initialized structure
+
 		unique case(i_if_instr[`RNG_OP])
 		
 			`LUI: begin
 				
-				id2all.format         = `JU_FORM;              // load instr is I format       
+				id2all.format         = `JU_FORM;             // load instr is I format       
 				id2all.alu_en         = 1'b1;
 				id2all.alu_src        = 1'b1;                 // the second arg of ALU is an immediate
 				id2all.pc             = i_if_pc;
-				//id2all.imm_gend       = 1'b0;               // not needed
 				id2all.is_branch      = 1'b0;                 // not branch
 				id2all.mem_rd         = 1'b0;                 // not load from mem
 				id2all.mem_wr         = 1'b0;                 // not store to mem
@@ -85,7 +115,7 @@ module id_stage(
 			
 			`AUIPC: begin
 
-				id2all.format         = `JU_FORM;              // load instr is I format       
+				id2all.format         = `JU_FORM;             // load instr is I format       
  				id2all.alu_en         = 1'b1;
 				id2all.alu_src        = 1'b1;                 // the second arg of ALU is an immediate
 				id2all.pc             = i_if_pc;
@@ -189,7 +219,7 @@ module id_stage(
 			end
 			
 			`LOAD: begin
-				id2all.format		= `I_FORM;		// load instr is I format	
+				id2all.format	      = `I_FORM;	      // load instr is I format	
 				id2all.alu_en         = 1'b1;   
 				id2all.alu_src        = 1'b1;                 // the second arg of ALU is an immediate
 				id2all.pc             = i_if_pc;
@@ -199,9 +229,9 @@ module id_stage(
 				id2all.mem_to_reg     = 1'b1;                 // write the result to RF
 				id2all.rf_wr          = 1'b1;                 // enable write to RF
 				id2all.rf_wr_addr     = i_if_instr[`RNG_RD];  // reg to write the result
-				id2all.rf_wr_data     = 0;     	        // unknown yet
+				id2all.rf_wr_data     = 0;     	              // unknown yet
 				id2all.is_valid       = 1'b1;                 // assume that the instruction is valid
-				id2all.en_sign_ext         = 1'b0;
+				id2all.en_sign_ext    = 1'b0;
 				id2all.alu_op		= `DO_ADD;
 				
 				unique case(i_if_instr[`RNG_F3])
@@ -231,29 +261,28 @@ module id_stage(
 						id2all.mem_ext = `UNSIGNED;
 					end
 
-					default: id2all.is_valid = 1'b0;	// invalid instruction
+					default: id2all.is_valid = 1'b0;      // invalid instruction
 					
 				endcase
 			
 			end
 			
 			`STORE: begin
-				id2all.format         = `BS_FORM;              // load instr is I format       
+				id2all.format         = `BS_FORM;             // load instr is I format       
 				id2all.alu_en         = 1'b1;
 				id2all.alu_src        = 1'b1;                 // the second arg of ALU is an immediate
 				id2all.pc             = i_if_pc;
-				//id2all.imm_gend       = 1'b0;               // not needed
 				id2all.is_branch      = 1'b0;                 // not branch
 				id2all.mem_rd         = 1'b0;                 // not load from mem
-				id2all.mem_wr         = 1'b1;                 // not store to mem
 				id2all.mem_to_reg     = 1'b1;                 // write the result to RF
+				id2all.mem_wr         = 1'b0;
 				id2all.rf_wr          = 1'b0;                 // enable write to RF
-				id2all.rf_wr_addr     = 0;			// reg to write the result
+				id2all.rf_wr_addr     = 0;		      // reg to write the result
 				id2all.rf_wr_data     = 0;                    // unknown yet
 				id2all.is_valid       = 1'b1;                 // assume that the instruction is valid
-				id2all.en_sign_ext         = 1'b0;
+				id2all.en_sign_ext    = 1'b0;
 				id2all.alu_op         = `DO_ADD;
-				id2all.mem_ext	= `SIGNED;
+				id2all.mem_ext	      = `SIGNED;
 
 				unique case (i_if_instr[`RNG_F3])
 				
@@ -365,14 +394,14 @@ module id_stage(
 									id2all.alu_op = `DO_SUB;
 							end
 
-							default: id2all.is_valid = 1'b0;       // invalid instruction
+							default: id2all.is_valid = 1'b0;        // invalid instruction
 
 						endcase
 					end
 
 					`F3_SLL: begin
 						if(i_if_instr[`RNG_F7] != `F7_SLL) begin
-							id2all.is_valid = 1'b0;       // invalid instruction
+							id2all.is_valid = 1'b0;       		// invalid instruction
 						end
 						else begin
 							id2all.alu_op = `DO_SLL;
@@ -381,7 +410,7 @@ module id_stage(
 
 					`F3_SLT: begin
 						if(i_if_instr[`RNG_F7] != `F7_SLT) begin
-							id2all.is_valid = 1'b0;       // invalid instruction
+							id2all.is_valid = 1'b0;       		// invalid instruction
 						end
 						else begin
 							id2all.alu_op = `DO_SLT;
@@ -390,7 +419,7 @@ module id_stage(
 
 					`F3_SLTU: begin
 						if(i_if_instr[`RNG_F7] != `F7_SLTU) begin
-							id2all.is_valid = 1'b0;       // invalid instruction
+							id2all.is_valid = 1'b0;       		// invalid instruction
 						end
 						else begin
 							id2all.alu_op = `DO_SLTU;
@@ -399,7 +428,7 @@ module id_stage(
 
 					`F3_XOR: begin
 						if(i_if_instr[`RNG_F7] != `F7_XOR) begin
-							id2all.is_valid = 1'b0;       // invalid instruction
+							id2all.is_valid = 1'b0;       		// invalid instruction
 						end
 						else begin
 							id2all.alu_op = `DO_XOR;
@@ -498,7 +527,7 @@ module id_stage(
 					id2all.pc		= i_if_pc;
 					id2all.is_branch	= 1'b0;
 					id2all.mem_rd		= 1'b0;
-					id2all.mem_wr		= 1'b1;
+					id2all.mem_wr		= 1'b0;
 					id2all.rf_wr		= 1'b0;
 					id2all.rf_wr_addr	= 0;
 					id2all.rf_wr_data	= 0;
@@ -652,29 +681,22 @@ module id_stage(
 			end	
 			
 			default: id2all.is_valid = 1'b0;       // invalid instruction
-		endcase			
+		endcase
+		end			
 	end
 
 	assign o_id_ready	= i_ex_ready; // && TODO stall control???
-	assign valid_instr	= id2all.is_valid;
-	assign valid_id         = o_id_ready && valid_instr;
 
 	always_ff @(posedge clk, negedge rst_n) begin
 
-		if(~rst_n) begin
+		if( ~rst_n ) begin
 
 			o_id2all <= 0;
 		end
 		else begin
-			if(o_id_ready) begin
-	
+			if( o_id_ready ) begin  // if not ready then stall
+
 				o_id2all <= id2all;
-			end
-
-			if(i_ex_flush_id) begin
-
-				o_id2all <= 0;
-
 			end
 		end	
 	end

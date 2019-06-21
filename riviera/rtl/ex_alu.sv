@@ -26,19 +26,18 @@ module ex_alu (
                                                 	o_struct.rf_wr_data = i_struct.rs1 + i_struct.imm_gend;
 						end
                                         end
-                                        else if(i_struct.format==`JU_FORM) begin
+                                        else if(i_struct.format == `JU_FORM) begin
                                         	;// error	
 					end
                                         else begin
-                                                o_struct.mem_addr= i_struct.rs1 + i_struct.imm_gend;
-						o_struct.mem_data= i_struct.rs2;
+                                                o_struct.mem_addr = i_struct.rs1 + i_struct.imm_gend;  // STORE
+						o_struct.mem_data = i_struct.rs2;
                                         end
 				end
 				
 				`DO_SUB: begin
 
                                 	o_struct.rf_wr_data = i_struct.rs1 - i_struct.rs2;
-					
 				end
 			
 				`DO_SLL: begin
@@ -158,11 +157,9 @@ module ex_alu (
 				end
 
 				default: ;
-       		
-				
+       	
+	
 			endcase
 	        end
 	end
-
 endmodule
-

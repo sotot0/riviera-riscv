@@ -1,6 +1,5 @@
-//import struct_pckg :: interconnection_struct; 
-
 module ex_stage (
+
 	input logic                     clk,
 	input logic                     rst_n,
 
@@ -12,8 +11,6 @@ module ex_stage (
 
 	// to IF & ID
 	output logic                    o_ex_ready,
-        output logic                    o_ex_flush_id,
-        output logic                    o_ex_flush_if,
 
 	output logic			o_ex_jump_taken,
 	output logic [`RNG_64]		o_ex_jump_target,
@@ -51,8 +48,6 @@ module ex_stage (
 	);
 	
 	assign o_ex_ready = i_mem_ready; // ??
-	assign o_ex_flush_id = o_ex_branch_taken | o_ex_jump_taken;
-	assign o_ex_flush_if = o_ex_branch_taken | o_ex_jump_taken;
 
 	always_ff @(posedge clk, negedge rst_n) begin
 		if(~rst_n) begin
@@ -61,7 +56,6 @@ module ex_stage (
 		else begin
 			if(o_ex_ready) begin
 				o_ex2all <= (mul_sel) ? to_output_from_br : to_output_from_sign_ext;
-//				o_ex2all <= to_output;
 			end
 		end
 	end
