@@ -26,7 +26,6 @@ typedef struct packed {
 	logic [7:0]			mem_wr_en;
 	logic [`RNG_64]                 mem_addr;
 	logic [`RNG_64]			mem_data;
-	logic				dm_mux_sel;
 	
 	logic 				mem_to_reg;
 	logic				rf_wr;

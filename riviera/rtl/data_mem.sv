@@ -7,7 +7,7 @@ module data_mem #(
   parameter INIT_ZERO   = 0,
   parameter INIT_FILE   = "codemem.hex",
   parameter INIT_START  = 0,
-  parameter INIT_END    = DEPTH-1,
+  parameter INIT_END    = DEPTH-1
 ) (
   
   input                           clk,
