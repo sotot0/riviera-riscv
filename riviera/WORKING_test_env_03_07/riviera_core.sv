@@ -101,8 +101,6 @@ mem_stage mem_instance(
 
 	.i_ex2all			(ex2mem),
 
-	.i_wb_ready			(wb_ready),
-
 	.o_mem2all			(mem2wb),
 
 	.o_mem_ready			(mem_ready),

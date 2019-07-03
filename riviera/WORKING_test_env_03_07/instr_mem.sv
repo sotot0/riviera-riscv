@@ -5,7 +5,7 @@ module instr_mem #(
   parameter DATA_WIDTH  = 64,
   parameter DATA_BYTES  = DATA_WIDTH/8,
   parameter INIT_ZERO   = 0,
-  parameter INIT_FILE   = "codemem.hex",
+  parameter INIT_FILE   = "example_test.imem.dat",
   parameter INIT_START  = 0,
   parameter INIT_END    = DEPTH-1
 ) (

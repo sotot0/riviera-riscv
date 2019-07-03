@@ -1,41 +1,42 @@
-//`include "defines.sv"
 //import struct_pckg :: interconnection_struct;
 
-module dm_load_controller(
+module dm_store_controller(
 
-	input interconnection_struct		i_struct, // this struct drived from the reg  
-	input [`RNG_64] 			dm_data,  // this data drived from the Data Memory
+//	input logic				clk,
+//	input logic				rst_n,
 
-	output interconnection_struct		o_struct, // final stuct of MEM stage
+	input interconnection_struct		i_struct,
+
+	output interconnection_struct		o_struct,
 	output logic				o_miss_aligned_error
 );
 
-
 	always_comb begin
-
+		
 		o_struct = i_struct;
-
-		if( i_struct.mem_rd && i_struct.is_valid ) begin		// LOAD HANDLING
+		
+		if( i_struct.mem_wr && i_struct.is_valid ) begin		// STORE HANDLING
 
 			unique case(i_struct.mem_req_unit)
 		
 				`B: begin
-					o_struct.mem_data[`RNG_64] = {56'b0, dm_data[i_struct.mem_addr[2:0]*8 +: 8]};
+
+					o_struct.mem_wr_en[i_struct.mem_addr[2:0] +: 1] = 1'b1;
+					o_struct.mem_data [i_struct.mem_addr[2:0]*8 +: 8] = i_struct.mem_data[7:0];
 					o_miss_aligned_error = 1'b0;
 				end
 
 				`HW: begin
 					if(i_struct.mem_addr[2:0] == 3'b111) begin
-					
 						// miss aligned error
 						o_miss_aligned_error = 1'b1;
-						o_struct.mem_data[`RNG_64] = 64'b0;
 						
 					end
 					else begin
-						
+						// all write operation will completed on one cycle (we will write on one line of DM)
 						o_miss_aligned_error = 1'b0;
-						o_struct.mem_data[`RNG_64] = {48'b0, dm_data[i_struct.mem_addr[2:0]*8 +: 16]};
+						o_struct.mem_wr_en[i_struct.mem_addr[2:0] +: 2] = 2'b11;
+						o_struct.mem_data [(i_struct.mem_addr[2:0]*8) +: 16] = i_struct.mem_data[15:0];
 					end
 				end
 
@@ -44,27 +45,26 @@ module dm_load_controller(
 
 						// miss aligned error
                                                 o_miss_aligned_error = 1'b1;
-						o_struct.mem_data[`RNG_64] = 64'b0;
-
+					
 					end
 					else if(i_struct.mem_addr[2:0] == 3'b110) begin
 
 						// miss aligned error
                                                 o_miss_aligned_error = 1'b1;
-						o_struct.mem_data[`RNG_64] = 64'b0;
 
 					end
 					else if(i_struct.mem_addr[2:0] == 3'b111) begin
 
 						// miss aligned error
                                                 o_miss_aligned_error = 1'b1;
-						o_struct.mem_data[`RNG_64] = 64'b0;
 
 					end
 					else begin
 						
+					        // all write operation will completed on one cycle (we will write on one line of DM)
 						o_miss_aligned_error = 1'b0;                                               
-                                                o_struct.mem_data[`RNG_64] = {32'b0, dm_data[i_struct.mem_addr[2:0]*8 +: 32]};
+                                                o_struct.mem_wr_en[i_struct.mem_addr[2:0] +: 4] = 4'b1111;
+                                                o_struct.mem_data [(i_struct.mem_addr[2:0]*8) +: 32] = i_struct.mem_data[31:0];
 
 					end
 
@@ -74,16 +74,16 @@ module dm_load_controller(
 					
 					if(i_struct.mem_addr[2:0] == 3'b000) begin
 						
+						// all write operation will completed on one cycle (we will write on one line of DM)
                                                 o_miss_aligned_error = 1'b0;
-                                                o_struct.mem_data[`RNG_64] = dm_data;
+                                                o_struct.mem_wr_en[7:0] = 8'b11111111;
+                                                o_struct.mem_data[63:0] = i_struct.mem_data[63:0];
 					
 					end 
 					else begin
 						
 						// miss aligned error
 						o_miss_aligned_error = 1'b1;
-						o_struct.mem_data[`RNG_64] = 64'b0;
-
 					end
 
 				end
