@@ -24,7 +24,14 @@ logic [`RNG_64]			jump_target;
 logic				if_valid_instr;
 logic				ex_ready;
 
+logic [`ALEN-1:0]		rs1;
+logic [`ALEN-1:0]		rs2;
+logic [1:0]			check_regs;
+logic				unstall;
+
 interconnection_struct		ex2mem;
+logic [`ALEN-1:0]		mem_rd;
+logic				is_mem_staller;
 
 interconnection_struct		mem2wb;
 logic [4:0]			wb_addr;
@@ -73,7 +80,11 @@ id_stage id_instance(
 	.i_ex_ready		(ex_ready),
 
 	.o_id_ready		(id_ready),
-	.o_id2all		(id2ex)
+	.o_id2all		(id2ex),
+
+	.o_rs1			(rs1),
+	.o_rs2			(rs2),
+	.o_check_regs		(check_regs)
 );
 
 ex_stage ex_instance(
@@ -84,7 +95,14 @@ ex_stage ex_instance(
 	.i_id2all		(id2ex),
 
 	.i_mem_ready		(mem_ready),
+	.i_mem_rd		(mem_rd),
 
+	.i_rs1			(rs1),
+	.i_rs2			(rs2),
+	.i_check_regs		(check_regs),
+	.o_is_mem_staller	(is_mem_staller),	
+	.i_unstall		(unstall),
+	
 	.o_ex_branch_taken	(branch_taken),
 	.o_ex_branch_target	(branch_target),
 	.o_ex_jump_taken	(jump_taken),
@@ -92,6 +110,7 @@ ex_stage ex_instance(
 
 	.o_ex_ready		(ex_ready),
 	.o_ex2all		(ex2mem)
+	
 );
 
 mem_stage mem_instance(
@@ -101,9 +120,13 @@ mem_stage mem_instance(
 
 	.i_ex2all			(ex2mem),
 
+	.i_is_mem_staller		(is_mem_staller),
+
 	.i_wb_ready			(wb_ready),
 
 	.o_mem2all			(mem2wb),
+
+	.o_mem_rd			(mem_rd),
 
 	.o_mem_ready			(mem_ready),
 
@@ -122,6 +145,7 @@ wb_stage wb_instance(
 	.o_wb_wr_reg_data	(wb_data),
 	.o_wb_wr_reg_en		(wb_en),
 
+	.o_unstall		(unstall),
 	.o_wb_ready		(wb_ready)
 
 );

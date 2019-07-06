@@ -162,5 +162,10 @@
 `define F7_SRLW_64			7'b0000000
 `define F7_SRAW_64			7'b0100000
 
+ // Stall Controller
+`define RS1				2'b10
+`define RS2				2'b01
+`define RS1_RS2				2'b11
+`define NONE				2'b00
 
 `endif

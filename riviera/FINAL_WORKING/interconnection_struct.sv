@@ -10,6 +10,8 @@ typedef struct packed {
 	logic [`RNG_64] 		rs1;
 	logic [`RNG_64] 		rs2;
 	
+	logic				staller;
+	
 	logic [3:0]			alu_op;
 	logic 				alu_en;
 	logic 				alu_src;

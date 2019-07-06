@@ -1,10 +1,10 @@
 # Begin_DVE_Session_Save_Info
 # DVE view(Wave.1 ) session
-# Saved on Wed Jul 3 13:41:46 2019
+# Saved on Thu Jul 4 00:33:01 2019
 # Toplevel windows open: 2
 # 	TopLevel.1
 # 	TopLevel.2
-#   Wave.1: 70 signals
+#   Wave.1: 79 signals
 # End_DVE_Session_Save_Info
 
 # DVE version: N-2017.12-1_Full64
@@ -22,8 +22,8 @@ gui_set_time_units 1s
 
 # Begin_DVE_Session_Save_Info (Wave.1)
 # DVE wave signals session
-# Saved on Wed Jul 3 13:41:46 2019
-# 70 signals
+# Saved on Thu Jul 4 00:33:01 2019
+# 79 signals
 # End_DVE_Session_Save_Info
 
 # DVE version: N-2017.12-1_Full64
@@ -31,12 +31,7 @@ gui_set_time_units 1s
 
 
 #Add ncecessay scopes
-gui_load_child_values {riv_testbench.mem_test}
-gui_load_child_values {riv_testbench.id_test}
-gui_load_child_values {riv_testbench}
-gui_load_child_values {riv_testbench.wb_test}
-gui_load_child_values {riv_testbench.ex_test}
-gui_load_child_values {riv_testbench.if_test}
+gui_load_child_values {riv_testbench.ex_test.ex_branch_instance}
 gui_load_child_values {riv_testbench.id_test.rf_instance}
 
 gui_set_time_units 1s
@@ -55,7 +50,7 @@ if {[gui_sg_is_group -name "$_wave_session_group_2"]} {
 }
 set Group2 "$_wave_session_group_2"
 
-gui_sg_addsignal -group "$_wave_session_group_2" { {Sim:riv_testbench.if_test.clk} {Sim:riv_testbench.if_test.o_if_pc} {Sim:riv_testbench.if_test.o_if_instr} {Sim:riv_testbench.if_test.o_if_valid_instr} {Sim:riv_testbench.if_test.i_jump_in_ex} {Sim:riv_testbench.if_test.i_jump_target} }
+gui_sg_addsignal -group "$_wave_session_group_2" { {Sim:riv_testbench.if_test.clk} {Sim:riv_testbench.if_test.o_if_pc} {Sim:riv_testbench.if_test.o_if_instr} {Sim:riv_testbench.if_test.o_if_valid_instr} {Sim:riv_testbench.if_test.i_jump_in_ex} {Sim:riv_testbench.if_test.i_jump_target} {Sim:riv_testbench.if_test.i_id_ready} }
 
 set _wave_session_group_3 id_test
 if {[gui_sg_is_group -name "$_wave_session_group_3"]} {
@@ -63,7 +58,7 @@ if {[gui_sg_is_group -name "$_wave_session_group_3"]} {
 }
 set Group3 "$_wave_session_group_3"
 
-gui_sg_addsignal -group "$_wave_session_group_3" { {Sim:riv_testbench.id_test.clk} {Sim:riv_testbench.id_test.i_if_pc} {Sim:riv_testbench.id_test.i_if_instr} {Sim:riv_testbench.id_test.id2all} {Sim:riv_testbench.id_test.i_wb_wr_reg_en} {Sim:riv_testbench.id_test.i_wb_wr_reg_addr} {Sim:riv_testbench.id_test.i_wb_wr_reg_data} {Sim:riv_testbench.id_test.o_id2all} {Sim:riv_testbench.id_test.i_ex_jump_taken} }
+gui_sg_addsignal -group "$_wave_session_group_3" { {Sim:riv_testbench.id_test.clk} {Sim:riv_testbench.id_test.i_if_pc} {Sim:riv_testbench.id_test.i_if_instr} {Sim:riv_testbench.id_test.id2all} {Sim:riv_testbench.id_test.i_wb_wr_reg_en} {Sim:riv_testbench.id_test.i_wb_wr_reg_addr} {Sim:riv_testbench.id_test.i_wb_wr_reg_data} {Sim:riv_testbench.id_test.o_id2all} {Sim:riv_testbench.id_test.i_ex_jump_taken} {Sim:riv_testbench.id_test.o_id_ready} }
 
 set _wave_session_group_4 rf_instance
 if {[gui_sg_is_group -name "$_wave_session_group_4"]} {
@@ -87,7 +82,7 @@ if {[gui_sg_is_group -name "$_wave_session_group_5"]} {
 }
 set Group5 "$_wave_session_group_5"
 
-gui_sg_addsignal -group "$_wave_session_group_5" { {Sim:riv_testbench.ex_test.clk} {Sim:riv_testbench.ex_test.i_id2all} {Sim:riv_testbench.ex_test.ex_branch_instance.o_ex_branch_taken} {Sim:riv_testbench.ex_test.ex_branch_instance.o_ex_branch_target} {Sim:riv_testbench.ex_test.o_ex_jump_taken} {Sim:riv_testbench.ex_test.o_ex_jump_target} {Sim:riv_testbench.ex_test.alu2ext} {Sim:riv_testbench.ex_test.mul_sel} {Sim:riv_testbench.ex_test.o_ex_ready} {Sim:riv_testbench.ex_test.o_ex2all} }
+gui_sg_addsignal -group "$_wave_session_group_5" { {Sim:riv_testbench.ex_test.clk} {Sim:riv_testbench.ex_test.i_id2all} {Sim:riv_testbench.ex_test.ex_branch_instance.o_ex_branch_taken} {Sim:riv_testbench.ex_test.ex_branch_instance.o_ex_branch_target} {Sim:riv_testbench.ex_test.o_ex_jump_taken} {Sim:riv_testbench.ex_test.o_ex_jump_target} {Sim:riv_testbench.ex_test.alu2ext} {Sim:riv_testbench.ex_test.mul_sel} {Sim:riv_testbench.ex_test.o_ex_ready} {Sim:riv_testbench.ex_test.o_ex2all} {Sim:riv_testbench.ex_test.i_rs1} {Sim:riv_testbench.ex_test.i_rs2} {Sim:riv_testbench.ex_test.i_check_regs} {Sim:riv_testbench.ex_test.i_unstall} {Sim:riv_testbench.ex_test.stall} }
 
 set _wave_session_group_6 mem_test
 if {[gui_sg_is_group -name "$_wave_session_group_6"]} {
@@ -103,7 +98,7 @@ if {[gui_sg_is_group -name "$_wave_session_group_7"]} {
 }
 set Group7 "$_wave_session_group_7"
 
-gui_sg_addsignal -group "$_wave_session_group_7" { {Sim:riv_testbench.wb_test.clk} {Sim:riv_testbench.wb_test.i_mem2all} {Sim:riv_testbench.wb_test.o_wb_wr_reg_en} {Sim:riv_testbench.wb_test.o_wb_wr_reg_addr} {Sim:riv_testbench.wb_test.o_wb_wr_reg_data} }
+gui_sg_addsignal -group "$_wave_session_group_7" { {Sim:riv_testbench.wb_test.clk} {Sim:riv_testbench.wb_test.i_mem2all} {Sim:riv_testbench.wb_test.o_wb_wr_reg_en} {Sim:riv_testbench.wb_test.o_wb_wr_reg_addr} {Sim:riv_testbench.wb_test.o_wb_wr_reg_data} {Sim:riv_testbench.wb_test.o_unstall} {Sim:riv_testbench.wb_test.o_wb_ready} }
 if {![info exists useOldWindow]} { 
 	set useOldWindow true
 }
@@ -133,12 +128,12 @@ gui_list_add_group -id ${Wave.1} -after {New Group} [list ${Group5}]
 gui_list_add_group -id ${Wave.1} -after {New Group} [list ${Group6}]
 gui_list_add_group -id ${Wave.1} -after {New Group} [list ${Group7}]
 gui_list_collapse -id ${Wave.1} ${Group1}
-gui_list_collapse -id ${Wave.1} ${Group2}
 gui_list_collapse -id ${Wave.1} ${Group3}
 gui_list_collapse -id ${Wave.1} ${Group4}
-gui_list_collapse -id ${Wave.1} ${Group5}
 gui_list_collapse -id ${Wave.1} ${Group6}
 gui_list_collapse -id ${Wave.1} ${Group7}
+gui_list_expand -id ${Wave.1} riv_testbench.ex_test.o_ex2all
+gui_list_select -id ${Wave.1} {riv_testbench.ex_test.i_id2all }
 gui_seek_criteria -id ${Wave.1} {Any Edge}
 
 
@@ -152,10 +147,10 @@ if { $groupExD } {
 }
 gui_list_set_filter -id ${Wave.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
 gui_list_set_filter -id ${Wave.1} -text {*}
-gui_list_set_insertion_bar  -id ${Wave.1} -group ${Group5}  -position in
+gui_list_set_insertion_bar  -id ${Wave.1} -group ${Group5}  -item {riv_testbench.ex_test.i_check_regs[1:0]} -position below
 
-gui_marker_move -id ${Wave.1} {C1} 477
-gui_view_scroll -id ${Wave.1} -vertical -set 0
+gui_marker_move -id ${Wave.1} {C1} 166
+gui_view_scroll -id ${Wave.1} -vertical -set 315
 gui_show_grid -id ${Wave.1} -enable false
 #</Session>
 

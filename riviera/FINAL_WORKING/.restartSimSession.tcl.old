@@ -1,21 +1,21 @@
 # Begin_DVE_Session_Save_Info
 # DVE restart session
-# Saved on Wed Jul 3 12:48:33 2019
+# Saved on Thu Jul 4 18:38:23 2019
 # Designs open: 1
 #   Sim: /home/sototo/graviera/test_env/simv
 # Toplevel windows open: 2
 # 	TopLevel.1
 # 	TopLevel.2
-#   Source.1: _vcs_unit__1049936903
-#   Wave.1: 70 signals
+#   Source.1: _vcs_unit__514785612
+#   Wave.1: 80 signals
 #   Group count = 7
 #   Group riv_testbench signal count = 19
-#   Group if_test signal count = 6
-#   Group id_test signal count = 9
+#   Group if_test signal count = 7
+#   Group id_test signal count = 10
 #   Group rf_instance signal count = 14
-#   Group ex_test signal count = 10
+#   Group ex_test signal count = 16
 #   Group mem_test signal count = 7
-#   Group wb_test signal count = 5
+#   Group wb_test signal count = 7
 # End_DVE_Session_Save_Info
 
 # DVE version: N-2017.12-1_Full64
@@ -65,7 +65,7 @@ gui_sync_global -id ${TopLevel.2} -option true
 
 # MDI window settings
 set Wave.1 Wave.1
-gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 557} {child_wave_right 1357} {child_wave_colname 216} {child_wave_colvalue 337} {child_wave_col1 0} {child_wave_col2 1}}
+gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 487} {child_wave_right 1187} {child_wave_colname 241} {child_wave_colvalue 241} {child_wave_col1 0} {child_wave_col2 1}}
 
 # End MDI window settings
 
@@ -92,6 +92,12 @@ gui_set_time_units 1s
 # Global: Signal Compare
 
 # Global: Signal Groups
+gui_load_child_values {riv_testbench.mem_test}
+gui_load_child_values {riv_testbench.id_test}
+gui_load_child_values {riv_testbench}
+gui_load_child_values {riv_testbench.ex_test.ex_branch_instance}
+gui_load_child_values {riv_testbench.wb_test}
+gui_load_child_values {riv_testbench.if_test}
 gui_load_child_values {riv_testbench.id_test.rf_instance}
 
 
@@ -105,13 +111,13 @@ set _session_group_2 if_test
 gui_sg_create "$_session_group_2"
 set if_test "$_session_group_2"
 
-gui_sg_addsignal -group "$_session_group_2" { riv_testbench.if_test.clk riv_testbench.if_test.o_if_pc riv_testbench.if_test.o_if_instr riv_testbench.if_test.o_if_valid_instr riv_testbench.if_test.i_jump_in_ex riv_testbench.if_test.i_jump_target }
+gui_sg_addsignal -group "$_session_group_2" { riv_testbench.if_test.clk riv_testbench.if_test.o_if_pc riv_testbench.if_test.o_if_instr riv_testbench.if_test.o_if_valid_instr riv_testbench.if_test.i_jump_in_ex riv_testbench.if_test.i_jump_target riv_testbench.if_test.i_id_ready }
 
 set _session_group_3 id_test
 gui_sg_create "$_session_group_3"
 set id_test "$_session_group_3"
 
-gui_sg_addsignal -group "$_session_group_3" { riv_testbench.id_test.clk riv_testbench.id_test.i_if_pc riv_testbench.id_test.i_if_instr riv_testbench.id_test.id2all riv_testbench.id_test.i_wb_wr_reg_en riv_testbench.id_test.i_wb_wr_reg_addr riv_testbench.id_test.i_wb_wr_reg_data riv_testbench.id_test.o_id2all riv_testbench.id_test.i_ex_jump_taken }
+gui_sg_addsignal -group "$_session_group_3" { riv_testbench.id_test.clk riv_testbench.id_test.i_if_pc riv_testbench.id_test.i_if_instr riv_testbench.id_test.id2all riv_testbench.id_test.i_wb_wr_reg_en riv_testbench.id_test.i_wb_wr_reg_addr riv_testbench.id_test.i_wb_wr_reg_data riv_testbench.id_test.o_id2all riv_testbench.id_test.i_ex_jump_taken riv_testbench.id_test.o_id_ready }
 
 set _session_group_4 rf_instance
 gui_sg_create "$_session_group_4"
@@ -131,7 +137,7 @@ set _session_group_5 ex_test
 gui_sg_create "$_session_group_5"
 set ex_test "$_session_group_5"
 
-gui_sg_addsignal -group "$_session_group_5" { riv_testbench.ex_test.clk riv_testbench.ex_test.i_id2all riv_testbench.ex_test.o_ex_jump_taken riv_testbench.ex_test.o_ex_jump_target riv_testbench.ex_test.ex_branch_instance.o_ex_branch_taken riv_testbench.ex_test.ex_branch_instance.o_ex_jump_target riv_testbench.ex_test.alu2ext riv_testbench.ex_test.mul_sel riv_testbench.ex_test.o_ex_ready riv_testbench.ex_test.o_ex2all }
+gui_sg_addsignal -group "$_session_group_5" { riv_testbench.ex_test.clk riv_testbench.ex_test.i_id2all riv_testbench.ex_test.ex_branch_instance.o_ex_branch_taken riv_testbench.ex_test.ex_branch_instance.o_ex_branch_target riv_testbench.ex_test.o_ex_jump_taken riv_testbench.ex_test.o_ex_jump_target riv_testbench.ex_test.alu2ext riv_testbench.ex_test.mul_sel riv_testbench.ex_test.o_ex_ready riv_testbench.ex_test.o_ex2all riv_testbench.ex_test.i_rs1 riv_testbench.ex_test.i_rs2 riv_testbench.ex_test.stall_controller_instance.i_rd riv_testbench.ex_test.i_check_regs riv_testbench.ex_test.i_unstall riv_testbench.ex_test.stall }
 
 set _session_group_6 mem_test
 gui_sg_create "$_session_group_6"
@@ -143,9 +149,7 @@ set _session_group_7 wb_test
 gui_sg_create "$_session_group_7"
 set wb_test "$_session_group_7"
 
-gui_sg_addsignal -group "$_session_group_7" { riv_testbench.wb_test.clk riv_testbench.wb_test.i_mem2all riv_testbench.wb_test.o_wb_wr_reg_en riv_testbench.wb_test.o_wb_wr_reg_addr riv_testbench.wb_test.o_wb_wr_reg_data }
-gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.wb_test.o_wb_wr_reg_addr}
-gui_set_radix -radix {unsigned} -signals {Sim:riv_testbench.wb_test.o_wb_wr_reg_addr}
+gui_sg_addsignal -group "$_session_group_7" { riv_testbench.wb_test.clk riv_testbench.wb_test.i_mem2all riv_testbench.wb_test.o_wb_wr_reg_en riv_testbench.wb_test.o_wb_wr_reg_addr riv_testbench.wb_test.o_wb_wr_reg_data riv_testbench.wb_test.o_unstall riv_testbench.wb_test.o_wb_ready }
 
 # Global: Highlighting
 
@@ -176,16 +180,16 @@ gui_list_set_filter -id ${Hier.1} -text {*}
 gui_change_design -id ${Hier.1} -design Sim
 catch {gui_list_expand -id ${Hier.1} riv_testbench}
 catch {gui_list_expand -id ${Hier.1} riv_testbench.ex_test}
-catch {gui_list_select -id ${Hier.1} {riv_testbench.ex_test.ex_branch_instance}}
+catch {gui_list_select -id ${Hier.1} {riv_testbench.ex_test.stall_controller_instance}}
 gui_view_scroll -id ${Hier.1} -vertical -set 0
 gui_view_scroll -id ${Hier.1} -horizontal -set 0
 
 # Data 'Data.1'
 gui_list_set_filter -id ${Data.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {LowPower 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
 gui_list_set_filter -id ${Data.1} -text {*}
-gui_list_show_data -id ${Data.1} {riv_testbench.ex_test.ex_branch_instance}
+gui_list_show_data -id ${Data.1} {riv_testbench.ex_test.stall_controller_instance}
 gui_show_window -window ${Data.1}
-catch { gui_list_select -id ${Data.1} {riv_testbench.ex_test.ex_branch_instance.o_ex_jump_target }}
+catch { gui_list_select -id ${Data.1} {riv_testbench.ex_test.stall_controller_instance.i_rd }}
 gui_view_scroll -id ${Data.1} -vertical -set 0
 gui_view_scroll -id ${Data.1} -horizontal -set 0
 gui_view_scroll -id ${Hier.1} -vertical -set 0
@@ -194,7 +198,7 @@ gui_view_scroll -id ${Hier.1} -horizontal -set 0
 # Source 'Source.1'
 gui_src_value_annotate -id ${Source.1} -switch false
 gui_set_env TOGGLE::VALUEANNOTATE 0
-gui_open_source -id ${Source.1}  -replace -active _vcs_unit__1049936903 /home/sototo/graviera/test_env/defines.sv
+gui_open_source -id ${Source.1}  -replace -active _vcs_unit__514785612 /home/sototo/graviera/test_env/defines.sv
 gui_view_scroll -id ${Source.1} -vertical -set 0
 gui_src_set_reusable -id ${Source.1}
 
@@ -206,7 +210,7 @@ set origWaveHeight [gui_get_pref_value -category Wave -key waveRowHeight]
 gui_list_set_height -id Wave -height 25
 set origGroupCreationState [gui_list_create_group_when_add -wave]
 gui_list_create_group_when_add -wave -disable
-gui_wv_zoom_timerange -id ${Wave.1} 286 731
+gui_wv_zoom_timerange -id ${Wave.1} 0 389
 gui_list_add_group -id ${Wave.1} -after {New Group} {riv_testbench}
 gui_list_add_group -id ${Wave.1} -after {New Group} {if_test}
 gui_list_add_group -id ${Wave.1} -after {New Group} {id_test}
@@ -218,8 +222,9 @@ gui_list_collapse -id ${Wave.1} riv_testbench
 gui_list_collapse -id ${Wave.1} if_test
 gui_list_collapse -id ${Wave.1} id_test
 gui_list_collapse -id ${Wave.1} rf_instance
+gui_list_collapse -id ${Wave.1} mem_test
 gui_list_collapse -id ${Wave.1} wb_test
-gui_list_select -id ${Wave.1} {riv_testbench.ex_test.o_ex_jump_target }
+gui_list_select -id ${Wave.1} {riv_testbench.ex_test.i_id2all }
 gui_seek_criteria -id ${Wave.1} {Any Edge}
 
 
@@ -235,7 +240,7 @@ if { $groupExD } {
 }
 gui_list_set_filter -id ${Wave.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
 gui_list_set_filter -id ${Wave.1} -text {*}
-gui_list_set_insertion_bar  -id ${Wave.1} -group ex_test  -item {riv_testbench.ex_test.o_ex_jump_target[63:0]} -position below
+gui_list_set_insertion_bar  -id ${Wave.1} -group ex_test  -item {riv_testbench.ex_test.stall_controller_instance.i_rd[4:0]} -position below
 
 gui_view_scroll -id ${Wave.1} -vertical -set 0
 gui_show_grid -id ${Wave.1} -enable false

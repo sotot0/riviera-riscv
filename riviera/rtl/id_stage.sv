@@ -25,6 +25,11 @@ module id_stage(
 	// to IF
 	output logic			o_id_ready,
 
+	// for stalling purposes
+	output logic [`ALEN-1:0]	o_rs1,
+	output logic [`ALEN-1:0]	o_rs2,
+	output logic [1:0]		o_check_regs,
+
 	// to EX
 	output interconnection_struct   o_id2all
 	// Packed struct to all from now on	
@@ -70,7 +75,8 @@ module id_stage(
 		id2all.alu_en		= 0;
 		id2all.alu_src		= 0;
 		id2all.pc		= 0;
-		// imm_gend is given         -//-
+		id2all.staller		= 0;
+		// imm_gend is given -- we don't care
 		id2all.is_branch	= 0;
 		id2all.is_compr		= 0;
 		id2all.branch_type	= 0;
@@ -88,14 +94,16 @@ module id_stage(
 		id2all.mem_req_unit	= 0;
 		id2all.mem_ext		= 0;
 		
-		if(i_if_valid_instr & ~i_ex_branch_taken & ~i_ex_jump_taken) begin  // iff instr is valid then decode.
-					    // else forward the
-					    // pre-initialized structure
+		if(i_if_valid_instr & ~i_ex_branch_taken & ~i_ex_jump_taken & i_ex_ready) begin  // iff instr is valid then decode.
+					    									    // else forward the
+					                                                                            // pre-initialized structure
 
 		unique case(i_if_instr[`RNG_OP])
 		
 			`LUI: begin
 				
+				o_check_regs	      = `NONE;				
+
 				id2all.format         = `JU_FORM;             // load instr is I format       
 				id2all.alu_en         = 1'b1;
 				id2all.alu_src        = 1'b1;                 // the second arg of ALU is an immediate
@@ -113,7 +121,9 @@ module id_stage(
 			end
 			
 			`AUIPC: begin
-
+				
+				o_check_regs  	      = `NONE;
+				
 				id2all.format         = `JU_FORM;             // load instr is I format       
  				id2all.alu_en         = 1'b1;
 				id2all.alu_src        = 1'b1;                 // the second arg of ALU is an immediate
@@ -132,6 +142,8 @@ module id_stage(
 			
 			`JAL: begin
 
+				o_check_regs 		= `NONE;
+				
 				id2all.format		= `JU_FORM;
 				id2all.alu_en		= 1'b1;
 				id2all.alu_src		= 1'b1;
@@ -153,6 +165,9 @@ module id_stage(
 					id2all.is_valid = 1'b0;
 				end
 				else begin 
+					
+					o_check_regs		= `RS1;	
+				
 					id2all.format		= `I_FORM;
 					id2all.alu_en		= 1'b1;
 					id2all.alu_src		= 1'b1;
@@ -170,6 +185,9 @@ module id_stage(
 			end
 			
 			`BRANCH: begin
+				
+				o_check_regs		= `RS1_RS2;			
+			
 				id2all.format		= `BS_FORM;
 				id2all.alu_en		= 1'b1;
 				id2all.alu_src		= 1'b0;
@@ -218,9 +236,12 @@ module id_stage(
 			end
 			
 			`IMM: begin
-				id2all.format		=`I_FORM;
+				
+				o_check_regs		= `RS1;
+				
+				id2all.format		= `I_FORM;
 				id2all.alu_en		= 1'b1;
-				id2all.alu_src	= 1'b1;
+				id2all.alu_src		= 1'b1;
 				id2all.pc		= i_if_pc;
 				id2all.is_branch	= 1'b0;
 				id2all.mem_rd		= 1'b0;
@@ -281,6 +302,9 @@ module id_stage(
 			end
 
 			`ALU: begin
+				
+				o_check_regs		= `RS1_RS2;
+			
 				id2all.format 		= `R_FORM;		
 				id2all.alu_en		= 1'b1;
 				id2all.alu_src		= 1'b0;			// the second arg of ALU is not immidiate
@@ -373,6 +397,8 @@ module id_stage(
 
                                                 endcase
 					end
+//recompiling module riv_testbench
+//recompiling module wb_stage
 
 					`F3_OR: begin
 						if(i_if_instr[`RNG_F7] != `F7_OR) begin
@@ -397,6 +423,9 @@ module id_stage(
 			end
 
 			`LWU_LD_64: begin
+				
+				o_check_regs		= `RS1;
+				
 				id2all.format		= `I_FORM;
 				id2all.alu_en		= 1'b1;
 				id2all.alu_src		= 1'b1;
@@ -456,6 +485,9 @@ module id_stage(
 			end
 
 			`SD_64:	begin
+
+					o_check_regs		= `RS1_RS2;
+
 					id2all.format		= `BS_FORM;
 					id2all.alu_en		= 1'b1;
 					id2all.alu_src		= 1'b1;
@@ -495,6 +527,8 @@ module id_stage(
 			end
 
 			`ADDIW_SLLIW_SRLIW_SRAIW_64: begin				
+
+				o_check_regs		= `RS1;
 
 				id2all.format		= `I_FORM;
 				id2all.alu_en		= 1'b1;
@@ -554,6 +588,9 @@ module id_stage(
 			end
 
 			`ALU_64: begin
+				
+				o_check_regs	      = `RS1_RS2;
+			
 				id2all.format         = `R_FORM;	
 				id2all.alu_en         = 1'b1;
                                 id2all.alu_src        = 1'b0;                 // the second arg of ALU is not immidiate
@@ -635,24 +672,25 @@ module id_stage(
 				endcase
 			end	
 			
-			default: id2all.is_valid = 1'b0;       // invalid instruction
+			default: begin
+					id2all.is_valid = 1'b0;       // invalid instruction
+					o_check_regs = `NONE;
+				end
 		endcase
+	
 		end			
 	end
 
-	assign o_id_ready	= i_ex_ready; // && TODO stall control???
-
+	assign o_rs1 = i_if_instr[`RNG_RS1];
+	assign o_rs2 = i_if_instr[`RNG_RS2];
+	assign o_id_ready = i_ex_ready; // stall control
+	
 	always_ff @(posedge clk, negedge rst_n) begin
-
 		if( ~rst_n ) begin
-
 			o_id2all <= 0;
 		end
 		else begin
-			if( o_id_ready ) begin  // if not ready then stall
-
-				o_id2all <= id2all;
-			end
+			o_id2all <= id2all;
 		end	
 	end
 endmodule

@@ -4,6 +4,8 @@
 module ex_branch(
 	
 	input interconnection_struct	i_struct,
+	input logic			i_stall,	
+	input logic			i_is_staller,
 
 	output interconnection_struct	o_struct,
 	output logic 			o_ex_jump_taken,
@@ -15,14 +17,16 @@ module ex_branch(
 
 	always_comb begin
 		o_struct = i_struct;
+		o_struct.staller = 1'b0;
 		o_ex_mul_sel = 1'b0;
 		o_ex_branch_taken = 1'b0;
 		o_ex_jump_taken = 1'b0;
 		o_ex_branch_target = 0;
 		o_ex_jump_target = 0;
+
 		if(i_struct.is_valid && i_struct.alu_en && i_struct.is_branch) begin
-			
 			o_ex_mul_sel = 1'b1;
+			o_struct.staller = i_is_staller;
 			
 			unique case (i_struct.alu_op)
 				

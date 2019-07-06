@@ -5,12 +5,15 @@ module mem_stage(
 	input logic				clk,
 	input logic				rst_n,
 	input logic				i_wb_ready,
-	input interconnection_struct		i_ex2all,	
-
+	input interconnection_struct		i_ex2all,
+	input logic				i_is_mem_staller,	
+	
 	output interconnection_struct		o_mem2all,
 	output logic				o_store_miss_aligned_error,
 	output logic				o_load_miss_aligned_error,
-	output logic				o_mem_ready
+	output logic				o_mem_ready,
+
+	output logic [`ALEN-1:0]		o_mem_rd
 );
 
 	interconnection_struct			to_dm_and_reg;
@@ -53,6 +56,7 @@ module mem_stage(
 	dm_load_controller dm_load_controller_instance(
 
 		.i_struct		(to_load_controller),
+		.i_is_mem_staller	(i_is_mem_staller),
 		.dm_data		(load_mem_data),
 		.o_struct		(to_sign_ext),
 		.o_miss_aligned_error	(o_load_miss_aligned_error)
@@ -66,6 +70,7 @@ module mem_stage(
 	
 	);
 	
+	assign o_mem_rd    = i_ex2all.rf_wr_addr;
 	assign o_mem_ready = i_wb_ready;
 
 endmodule

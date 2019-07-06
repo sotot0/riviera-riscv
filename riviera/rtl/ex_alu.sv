@@ -3,6 +3,7 @@
 module ex_alu ( 
 
 	input interconnection_struct	i_struct,
+
 	output interconnection_struct   o_struct
 
 );
@@ -12,7 +13,8 @@ module ex_alu (
 		o_struct = i_struct;
 
 		if(i_struct.is_valid && i_struct.alu_en && !i_struct.is_branch) begin
-    			unique case (i_struct.alu_op) 
+    			
+			unique case (i_struct.alu_op) 
 				
 				`DO_ADD: begin
                                 	if(i_struct.format ==`R_FORM) begin

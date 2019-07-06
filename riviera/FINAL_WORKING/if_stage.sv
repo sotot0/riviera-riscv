@@ -10,7 +10,7 @@ module if_stage(
 
      // ID-relative inputs
      input logic				i_id_ready,	// is ID stage ready	
-
+    
      // EX-relative inputs
      input logic				i_branch_in_ex,	// branch taken in EX
      input logic [`RNG_64]			i_branch_target,// branch target	
@@ -53,21 +53,21 @@ module if_stage(
 		else if (i_jump_in_ex) begin
 			if_pc = i_jump_target;
 		end
+		else if (~i_id_ready) begin
+			if_pc = o_if_pc;
+		end
 		else begin
 			if_pc = o_if_pc + 4;
 		end
-
 	end
 
-
-	assign o_if_valid_instr	= (rst_n && ~i_branch_in_ex && ~i_jump_in_ex); // valid instruction
-	
+	assign o_if_valid_instr	= (rst_n && ~i_branch_in_ex && ~i_jump_in_ex); // valid instruction	
 
 	always_ff @( posedge clk, negedge rst_n ) begin
 
-		if( i_id_ready ) begin
+		//if( i_id_ready ) begin
 			o_if_pc <= if_pc;
-		end
+		//end
 	end
 
 endmodule	

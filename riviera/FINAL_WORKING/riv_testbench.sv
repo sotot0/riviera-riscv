@@ -15,12 +15,19 @@ module riv_testbench;
 	logic [`RNG_64] pc;
 	logic valid_instr;
 
+	logic [`ALEN-1:0] rs1;
+	logic [`ALEN-1:0] rs2;
+	logic [1:0]	  check_regs;
+	logic unstall;
+
 	logic id_ready;
 	interconnection_struct id2all;
 	
 	logic ex_ready;
 	logic ex_jump_taken;
 	logic ex_branch_taken;
+	logic [`ALEN-1:0] mem_rd;
+	logic is_mem_staller;
 	interconnection_struct ex2all;
 	
 	logic mem_ready;
@@ -44,7 +51,7 @@ module riv_testbench;
 		.i_jump_target		(ex_jump_target),
 		.i_wen			(i_wen),
 		.i_wdata		(i_wdata),
-
+		
 		.o_if_instr		(instruction),
 		.o_if_pc		(pc),
 		.o_if_valid_instr	(valid_instr)
@@ -65,7 +72,12 @@ module riv_testbench;
 		.i_wb_wr_reg_en		(wb_wr_reg_en),
 		
 		.o_id_ready		(id_ready),
-		.o_id2all		(id2all)
+		.o_id2all		(id2all),
+
+        	.o_rs1                  (rs1),
+	        .o_rs2                  (rs2),
+        	.o_check_regs           (check_regs)
+
 	);
 
 	ex_stage ex_test(
@@ -74,13 +86,21 @@ module riv_testbench;
 		.rst_n			(rst_n),
 		.i_id2all		(id2all),
 		.i_mem_ready		(mem_ready),
-		
+	
+	        .i_rs1                  (rs1),
+        	.i_rs2                  (rs2),
+  	      	.i_check_regs           (check_regs),
+		.i_mem_rd		(mem_rd),
+        	.i_unstall              (unstall),
+	
 		.o_ex_ready		(ex_ready),
+		.o_is_mem_staller	(is_mem_staller),
 		.o_ex_jump_taken	(ex_jump_taken),
 		.o_ex_branch_taken	(ex_branch_taken),
 		.o_ex_branch_target	(ex_branch_target),
 		.o_ex_jump_target	(ex_jump_target),
 		.o_ex2all		(ex2all)
+		
 	);
 
 	mem_stage mem_test(
@@ -89,7 +109,9 @@ module riv_testbench;
 		.rst_n				(rst_n),
 		.i_ex2all			(ex2all),
 		.i_wb_ready			(1'b1),
+		.i_is_mem_staller		(is_mem_staller),
 
+		.o_mem_rd			(mem_rd),
 		.o_mem_ready			(mem_ready),
 		.o_mem2all			(mem2all),
 		.o_store_miss_aligned_error	(st_miss_al),
@@ -106,7 +128,8 @@ module riv_testbench;
 		.o_wb_wr_reg_addr		(wb_wr_reg_addr),
 		.o_wb_wr_reg_data		(wb_wr_reg_data),
 		.o_wb_wr_reg_en			(wb_wr_reg_en),
-
+		
+		.o_unstall			(unstall),
 		.o_wb_ready			(wb_ready)
 	);
 
