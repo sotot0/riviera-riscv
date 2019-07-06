@@ -1,3 +1,5 @@
+`timescale 1ns/1ns
+
 module compr_instr_unit (
 
   input logic [31:0] i_instr, 
@@ -6,7 +8,6 @@ module compr_instr_unit (
   output logic o_ill_instr 
                      
 );
-
 
 parameter OpImm     = 7'b00_100_11;
 parameter Load      = 7'b00_000_11;
@@ -142,9 +143,14 @@ always_comb begin
                  unique case (i_instr[11:10])
                   
                    2'b00,2'b01: begin
-                     //srli rd ′,rd ′, shamt[5:0]
-                     //srai rd ′, rd ′, shamt[5:0]
-                     o_instr = { 1'b0, i_instr[10]  ,4'b0,  i_instr[12], i_instr[6:2] , 2'b01, i_instr[9:7], 3'b101, 2'b01, i_instr[9:7]  ,OpImm };
+		     if   ({i_instr[12],i_instr[6:2]}==6'b0)  begin
+                   	o_ill_instr = 1'b1;
+                     end
+		     else begin
+                       //srli rd ′,rd ′, shamt[5:0]
+                       //srai rd ′, rd ′, shamt[5:0]
+                       o_instr = { 1'b0, i_instr[10]  ,4'b0,  i_instr[12], i_instr[6:2] , 2'b01, i_instr[9:7], 3'b101, 2'b01, i_instr[9:7]  ,OpImm };
+		     end
                    end   
 
 
@@ -288,7 +294,7 @@ always_comb begin
 
                c2Sdsp: begin
                  //sd rs2, offset[8:3](x2)
-                 o_instr = {3'b0, i_instr[9:7],i_instr[12], i_instr[6:2] ,5'h02, 3'b011, i_instr[11:10], 2'b00  ,Store};
+                 o_instr = {3'b0, i_instr[9:7],i_instr[12], i_instr[6:2] ,5'h02, 3'b011, i_instr[11:10], 3'b000  ,Store};
                end
 
                default: begin
@@ -299,7 +305,7 @@ always_comb begin
 
     end    
     
-    //not compressed instrtruction
+    //not compressed instruction
     default: begin
                o_instr = i_instr;
                o_is_compr = 1'b0;
