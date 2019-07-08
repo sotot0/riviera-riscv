@@ -1,21 +1,21 @@
 # Begin_DVE_Session_Save_Info
 # DVE restart session
-# Saved on Thu Jul 4 18:38:23 2019
+# Saved on Mon Jul 8 00:12:04 2019
 # Designs open: 1
-#   Sim: /home/sototo/graviera/test_env/simv
+#   Sim: /home/sototo/graviera/FINAL_WORKING/simv
 # Toplevel windows open: 2
 # 	TopLevel.1
 # 	TopLevel.2
-#   Source.1: _vcs_unit__514785612
-#   Wave.1: 80 signals
+#   Source.1: riv_testbench.mem_test.dm_load_controller_instance
+#   Wave.1: 89 signals
 #   Group count = 7
-#   Group riv_testbench signal count = 19
-#   Group if_test signal count = 7
-#   Group id_test signal count = 10
+#   Group if_test signal count = 10
+#   Group id_test signal count = 13
+#   Group ex_test signal count = 19
+#   Group mem_test signal count = 6
+#   Group data_mem_instance signal count = 19
+#   Group wb_test signal count = 8
 #   Group rf_instance signal count = 14
-#   Group ex_test signal count = 16
-#   Group mem_test signal count = 7
-#   Group wb_test signal count = 7
 # End_DVE_Session_Save_Info
 
 # DVE version: N-2017.12-1_Full64
@@ -65,7 +65,7 @@ gui_sync_global -id ${TopLevel.2} -option true
 
 # MDI window settings
 set Wave.1 Wave.1
-gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 487} {child_wave_right 1187} {child_wave_colname 241} {child_wave_colvalue 241} {child_wave_col1 0} {child_wave_col2 1}}
+gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 487} {child_wave_right 1187} {child_wave_colname 242} {child_wave_colvalue 241} {child_wave_col1 0} {child_wave_col2 1}}
 
 # End MDI window settings
 
@@ -92,38 +92,73 @@ gui_set_time_units 1s
 # Global: Signal Compare
 
 # Global: Signal Groups
-gui_load_child_values {riv_testbench.mem_test}
 gui_load_child_values {riv_testbench.id_test}
-gui_load_child_values {riv_testbench}
-gui_load_child_values {riv_testbench.ex_test.ex_branch_instance}
 gui_load_child_values {riv_testbench.wb_test}
+gui_load_child_values {riv_testbench.ex_test}
 gui_load_child_values {riv_testbench.if_test}
-gui_load_child_values {riv_testbench.id_test.rf_instance}
 
 
-set _session_group_1 riv_testbench
+set _session_group_1 if_test
 gui_sg_create "$_session_group_1"
-set riv_testbench "$_session_group_1"
+set if_test "$_session_group_1"
 
-gui_sg_addsignal -group "$_session_group_1" { riv_testbench.wb_wr_reg_en riv_testbench.pc riv_testbench.ex2all riv_testbench.wb_wr_reg_data riv_testbench.wb_wr_reg_addr riv_testbench.mem2all riv_testbench.id2all riv_testbench.ex_branch_taken riv_testbench.wb_ready riv_testbench.ex_jump_taken riv_testbench.ex_ready riv_testbench.instruction riv_testbench.mem_ready riv_testbench.id_ready riv_testbench.ex_jump_target riv_testbench.clk riv_testbench.valid_instr riv_testbench.rst_n riv_testbench.ex_branch_target }
+gui_sg_addsignal -group "$_session_group_1" { riv_testbench.if_test.clk riv_testbench.if_test.i_branch_in_ex riv_testbench.if_test.i_branch_target riv_testbench.if_test.i_jump_in_ex riv_testbench.if_test.i_jump_target riv_testbench.if_test.i_id_ready riv_testbench.if_test.o_if_valid_instr riv_testbench.if_test.o_if_pc riv_testbench.if_test.o_if_instr riv_testbench.if_test.rst_n }
 
-set _session_group_2 if_test
+set _session_group_2 id_test
 gui_sg_create "$_session_group_2"
-set if_test "$_session_group_2"
+set id_test "$_session_group_2"
 
-gui_sg_addsignal -group "$_session_group_2" { riv_testbench.if_test.clk riv_testbench.if_test.o_if_pc riv_testbench.if_test.o_if_instr riv_testbench.if_test.o_if_valid_instr riv_testbench.if_test.i_jump_in_ex riv_testbench.if_test.i_jump_target riv_testbench.if_test.i_id_ready }
+gui_sg_addsignal -group "$_session_group_2" { riv_testbench.id_test.clk riv_testbench.id_test.i_ex_jump_taken riv_testbench.id_test.i_ex_branch_taken riv_testbench.id_test.i_wb_wr_reg_en riv_testbench.id_test.i_wb_wr_reg_addr riv_testbench.id_test.i_wb_wr_reg_data riv_testbench.id_test.i_ex_ready riv_testbench.id_test.id2all riv_testbench.id_test.o_id2all riv_testbench.id_test.o_id_ready riv_testbench.id_test.o_check_regs riv_testbench.id_test.o_rs1 riv_testbench.id_test.o_rs2 }
 
-set _session_group_3 id_test
+set _session_group_3 ex_test
 gui_sg_create "$_session_group_3"
-set id_test "$_session_group_3"
+set ex_test "$_session_group_3"
 
-gui_sg_addsignal -group "$_session_group_3" { riv_testbench.id_test.clk riv_testbench.id_test.i_if_pc riv_testbench.id_test.i_if_instr riv_testbench.id_test.id2all riv_testbench.id_test.i_wb_wr_reg_en riv_testbench.id_test.i_wb_wr_reg_addr riv_testbench.id_test.i_wb_wr_reg_data riv_testbench.id_test.o_id2all riv_testbench.id_test.i_ex_jump_taken riv_testbench.id_test.o_id_ready }
+gui_sg_addsignal -group "$_session_group_3" { riv_testbench.ex_test.clk riv_testbench.ex_test.o_ex_branch_taken riv_testbench.ex_test.o_ex_branch_target riv_testbench.ex_test.o_ex_jump_taken riv_testbench.ex_test.o_ex_jump_target riv_testbench.ex_test.stall riv_testbench.ex_test.i_unstall riv_testbench.ex_test.o_ex_ready riv_testbench.ex_test.is_staller riv_testbench.ex_test.o_is_wb_staller riv_testbench.ex_test.o_is_mem_staller riv_testbench.ex_test.i_id2all riv_testbench.ex_test.o_ex2all riv_testbench.ex_test.i_mem_rd riv_testbench.ex_test.i_wb_rd riv_testbench.ex_test.pipeline_stalled riv_testbench.ex_test.i_check_regs riv_testbench.ex_test.i_rs1 riv_testbench.ex_test.i_rs2 }
 
-set _session_group_4 rf_instance
+set _session_group_4 mem_test
 gui_sg_create "$_session_group_4"
-set rf_instance "$_session_group_4"
+set mem_test "$_session_group_4"
 
-gui_sg_addsignal -group "$_session_group_4" { riv_testbench.id_test.rf_instance.ALEN riv_testbench.id_test.rf_instance.o_rdata_b riv_testbench.id_test.rf_instance.i_waddr riv_testbench.id_test.rf_instance.DH riv_testbench.id_test.rf_instance.DLEN riv_testbench.id_test.rf_instance.rf riv_testbench.id_test.rf_instance.wen riv_testbench.id_test.rf_instance.i_raddr_a riv_testbench.id_test.rf_instance.i_raddr_b riv_testbench.id_test.rf_instance.clk riv_testbench.id_test.rf_instance.i_wen riv_testbench.id_test.rf_instance.RF_WORDS riv_testbench.id_test.rf_instance.i_wdata riv_testbench.id_test.rf_instance.o_rdata_a }
+gui_sg_addsignal -group "$_session_group_4" { riv_testbench.mem_test.clk riv_testbench.mem_test.to_dm_and_reg riv_testbench.mem_test.i_ex2all riv_testbench.mem_test.o_mem2all riv_testbench.mem_test.i_is_mem_staller riv_testbench.mem_test.o_mem_rd }
+
+set _session_group_5 data_mem_instance
+gui_sg_create "$_session_group_5"
+set data_mem_instance "$_session_group_5"
+
+gui_sg_addsignal -group "$_session_group_5" { riv_testbench.mem_test.data_mem_instance.INIT_END riv_testbench.mem_test.data_mem_instance.ADDR_LOW riv_testbench.mem_test.data_mem_instance.DATA_BYTES riv_testbench.mem_test.data_mem_instance.o_rdata riv_testbench.mem_test.data_mem_instance.INIT_START riv_testbench.mem_test.data_mem_instance.ADDR_HIGH riv_testbench.mem_test.data_mem_instance.INIT_FILE riv_testbench.mem_test.data_mem_instance.ADDR_WIDTH riv_testbench.mem_test.data_mem_instance.INIT_ZERO riv_testbench.mem_test.data_mem_instance.ADDR_SIZE riv_testbench.mem_test.data_mem_instance.DEPTH riv_testbench.mem_test.data_mem_instance.addr riv_testbench.mem_test.data_mem_instance.i_addr riv_testbench.mem_test.data_mem_instance.DATA_WIDTH riv_testbench.mem_test.data_mem_instance.clk riv_testbench.mem_test.data_mem_instance.i_wen riv_testbench.mem_test.data_mem_instance.cycle riv_testbench.mem_test.data_mem_instance.i_wdata riv_testbench.mem_test.data_mem_instance.mem }
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.INIT_END}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.INIT_END}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.ADDR_LOW}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.ADDR_LOW}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.DATA_BYTES}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.DATA_BYTES}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.INIT_START}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.INIT_START}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.ADDR_HIGH}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.ADDR_HIGH}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.ADDR_WIDTH}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.ADDR_WIDTH}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.INIT_ZERO}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.INIT_ZERO}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.ADDR_SIZE}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.ADDR_SIZE}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.DEPTH}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.DEPTH}
+gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.mem_test.data_mem_instance.DATA_WIDTH}
+gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.mem_test.data_mem_instance.DATA_WIDTH}
+
+set _session_group_6 wb_test
+gui_sg_create "$_session_group_6"
+set wb_test "$_session_group_6"
+
+gui_sg_addsignal -group "$_session_group_6" { riv_testbench.wb_test.clk riv_testbench.wb_test.i_is_wb_staller riv_testbench.wb_test.i_mem2all riv_testbench.wb_test.o_wb_rd riv_testbench.wb_test.o_unstall riv_testbench.wb_test.o_wb_wr_reg_en riv_testbench.wb_test.o_wb_wr_reg_addr riv_testbench.wb_test.o_wb_wr_reg_data }
+
+set _session_group_7 rf_instance
+gui_sg_create "$_session_group_7"
+set rf_instance "$_session_group_7"
+
+gui_sg_addsignal -group "$_session_group_7" { riv_testbench.id_test.rf_instance.ALEN riv_testbench.id_test.rf_instance.o_rdata_b riv_testbench.id_test.rf_instance.i_waddr riv_testbench.id_test.rf_instance.DH riv_testbench.id_test.rf_instance.DLEN riv_testbench.id_test.rf_instance.rf riv_testbench.id_test.rf_instance.wen riv_testbench.id_test.rf_instance.i_raddr_a riv_testbench.id_test.rf_instance.i_raddr_b riv_testbench.id_test.rf_instance.clk riv_testbench.id_test.rf_instance.i_wen riv_testbench.id_test.rf_instance.RF_WORDS riv_testbench.id_test.rf_instance.i_wdata riv_testbench.id_test.rf_instance.o_rdata_a }
 gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.id_test.rf_instance.ALEN}
 gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.id_test.rf_instance.ALEN}
 gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.id_test.rf_instance.DH}
@@ -132,24 +167,6 @@ gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.id_test.rf_instance.D
 gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.id_test.rf_instance.DLEN}
 gui_set_radix -radix {decimal} -signals {Sim:riv_testbench.id_test.rf_instance.RF_WORDS}
 gui_set_radix -radix {twosComplement} -signals {Sim:riv_testbench.id_test.rf_instance.RF_WORDS}
-
-set _session_group_5 ex_test
-gui_sg_create "$_session_group_5"
-set ex_test "$_session_group_5"
-
-gui_sg_addsignal -group "$_session_group_5" { riv_testbench.ex_test.clk riv_testbench.ex_test.i_id2all riv_testbench.ex_test.ex_branch_instance.o_ex_branch_taken riv_testbench.ex_test.ex_branch_instance.o_ex_branch_target riv_testbench.ex_test.o_ex_jump_taken riv_testbench.ex_test.o_ex_jump_target riv_testbench.ex_test.alu2ext riv_testbench.ex_test.mul_sel riv_testbench.ex_test.o_ex_ready riv_testbench.ex_test.o_ex2all riv_testbench.ex_test.i_rs1 riv_testbench.ex_test.i_rs2 riv_testbench.ex_test.stall_controller_instance.i_rd riv_testbench.ex_test.i_check_regs riv_testbench.ex_test.i_unstall riv_testbench.ex_test.stall }
-
-set _session_group_6 mem_test
-gui_sg_create "$_session_group_6"
-set mem_test "$_session_group_6"
-
-gui_sg_addsignal -group "$_session_group_6" { riv_testbench.mem_test.clk riv_testbench.mem_test.i_ex2all riv_testbench.mem_test.to_dm_and_reg riv_testbench.mem_test.load_mem_data riv_testbench.mem_test.to_load_controller riv_testbench.mem_test.to_sign_ext riv_testbench.mem_test.o_mem2all }
-
-set _session_group_7 wb_test
-gui_sg_create "$_session_group_7"
-set wb_test "$_session_group_7"
-
-gui_sg_addsignal -group "$_session_group_7" { riv_testbench.wb_test.clk riv_testbench.wb_test.i_mem2all riv_testbench.wb_test.o_wb_wr_reg_en riv_testbench.wb_test.o_wb_wr_reg_addr riv_testbench.wb_test.o_wb_wr_reg_data riv_testbench.wb_test.o_unstall riv_testbench.wb_test.o_wb_ready }
 
 # Global: Highlighting
 
@@ -179,17 +196,15 @@ gui_list_set_filter -id ${Hier.1} -list { {Package 1} {All 0} {Process 1} {VirtP
 gui_list_set_filter -id ${Hier.1} -text {*}
 gui_change_design -id ${Hier.1} -design Sim
 catch {gui_list_expand -id ${Hier.1} riv_testbench}
-catch {gui_list_expand -id ${Hier.1} riv_testbench.ex_test}
-catch {gui_list_select -id ${Hier.1} {riv_testbench.ex_test.stall_controller_instance}}
+catch {gui_list_expand -id ${Hier.1} riv_testbench.mem_test}
+catch {gui_list_select -id ${Hier.1} {riv_testbench.mem_test.data_mem_instance}}
 gui_view_scroll -id ${Hier.1} -vertical -set 0
 gui_view_scroll -id ${Hier.1} -horizontal -set 0
 
 # Data 'Data.1'
 gui_list_set_filter -id ${Data.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {LowPower 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
 gui_list_set_filter -id ${Data.1} -text {*}
-gui_list_show_data -id ${Data.1} {riv_testbench.ex_test.stall_controller_instance}
-gui_show_window -window ${Data.1}
-catch { gui_list_select -id ${Data.1} {riv_testbench.ex_test.stall_controller_instance.i_rd }}
+gui_list_show_data -id ${Data.1} {riv_testbench.mem_test.data_mem_instance}
 gui_view_scroll -id ${Data.1} -vertical -set 0
 gui_view_scroll -id ${Data.1} -horizontal -set 0
 gui_view_scroll -id ${Hier.1} -vertical -set 0
@@ -198,8 +213,8 @@ gui_view_scroll -id ${Hier.1} -horizontal -set 0
 # Source 'Source.1'
 gui_src_value_annotate -id ${Source.1} -switch false
 gui_set_env TOGGLE::VALUEANNOTATE 0
-gui_open_source -id ${Source.1}  -replace -active _vcs_unit__514785612 /home/sototo/graviera/test_env/defines.sv
-gui_view_scroll -id ${Source.1} -vertical -set 0
+gui_open_source -id ${Source.1}  -replace -active riv_testbench.mem_test.dm_load_controller_instance /home/sototo/graviera/FINAL_WORKING/dm_load_controller.sv
+gui_view_scroll -id ${Source.1} -vertical -set 54
 gui_src_set_reusable -id ${Source.1}
 
 # View 'Wave.1'
@@ -210,21 +225,20 @@ set origWaveHeight [gui_get_pref_value -category Wave -key waveRowHeight]
 gui_list_set_height -id Wave -height 25
 set origGroupCreationState [gui_list_create_group_when_add -wave]
 gui_list_create_group_when_add -wave -disable
-gui_wv_zoom_timerange -id ${Wave.1} 0 389
-gui_list_add_group -id ${Wave.1} -after {New Group} {riv_testbench}
+gui_wv_zoom_timerange -id ${Wave.1} 13144506 13144895
 gui_list_add_group -id ${Wave.1} -after {New Group} {if_test}
 gui_list_add_group -id ${Wave.1} -after {New Group} {id_test}
-gui_list_add_group -id ${Wave.1} -after {New Group} {rf_instance}
 gui_list_add_group -id ${Wave.1} -after {New Group} {ex_test}
 gui_list_add_group -id ${Wave.1} -after {New Group} {mem_test}
+gui_list_add_group -id ${Wave.1} -after {New Group} {data_mem_instance}
 gui_list_add_group -id ${Wave.1} -after {New Group} {wb_test}
-gui_list_collapse -id ${Wave.1} riv_testbench
+gui_list_add_group -id ${Wave.1} -after {New Group} {rf_instance}
 gui_list_collapse -id ${Wave.1} if_test
 gui_list_collapse -id ${Wave.1} id_test
-gui_list_collapse -id ${Wave.1} rf_instance
 gui_list_collapse -id ${Wave.1} mem_test
+gui_list_collapse -id ${Wave.1} data_mem_instance
 gui_list_collapse -id ${Wave.1} wb_test
-gui_list_select -id ${Wave.1} {riv_testbench.ex_test.i_id2all }
+gui_list_expand -id ${Wave.1} riv_testbench.id_test.rf_instance.rf
 gui_seek_criteria -id ${Wave.1} {Any Edge}
 
 
@@ -240,16 +254,16 @@ if { $groupExD } {
 }
 gui_list_set_filter -id ${Wave.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
 gui_list_set_filter -id ${Wave.1} -text {*}
-gui_list_set_insertion_bar  -id ${Wave.1} -group ex_test  -item {riv_testbench.ex_test.stall_controller_instance.i_rd[4:0]} -position below
+gui_list_set_insertion_bar  -id ${Wave.1} -group mem_test  -position below
 
-gui_view_scroll -id ${Wave.1} -vertical -set 0
+gui_view_scroll -id ${Wave.1} -vertical -set 550
 gui_show_grid -id ${Wave.1} -enable false
 # Restore toplevel window zorder
 # The toplevel window could be closed if it has no view/pane
 if {[gui_exist_window -window ${TopLevel.1}]} {
 	gui_set_active_window -window ${TopLevel.1}
 	gui_set_active_window -window ${Source.1}
-	gui_set_active_window -window ${DLPane.1}
+	gui_set_active_window -window ${HSPane.1}
 }
 if {[gui_exist_window -window ${TopLevel.2}]} {
 	gui_set_active_window -window ${TopLevel.2}

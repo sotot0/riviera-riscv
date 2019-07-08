@@ -5,7 +5,7 @@ module data_mem #(
   parameter ADDR_WIDTH  = DATA_WIDTH,   // address size equals data size
   parameter DATA_BYTES  = DATA_WIDTH/8,
   parameter INIT_ZERO   = 0,
-  parameter INIT_FILE   = "example_test.dmem.dat",
+  parameter INIT_FILE   = "fib.dmem.dat",
   parameter INIT_START  = 0,
   parameter INIT_END    = DEPTH-1
 ) (

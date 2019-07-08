@@ -26,7 +26,8 @@ module mem_stage(
         dm_store_controller dm_store_controller_instance(
 
                 .i_struct               (i_ex2all),
-                .o_struct               (to_dm_and_reg),
+                .i_is_mem_staller       (i_is_mem_staller),
+		.o_struct               (to_dm_and_reg),
 		.o_miss_aligned_error	(o_store_miss_aligned_error)
        
 	 );
@@ -56,7 +57,6 @@ module mem_stage(
 	dm_load_controller dm_load_controller_instance(
 
 		.i_struct		(to_load_controller),
-		.i_is_mem_staller	(i_is_mem_staller),
 		.dm_data		(load_mem_data),
 		.o_struct		(to_sign_ext),
 		.o_miss_aligned_error	(o_load_miss_aligned_error)

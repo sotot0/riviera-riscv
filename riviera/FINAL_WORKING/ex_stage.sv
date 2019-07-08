@@ -17,6 +17,7 @@ module ex_stage (
 	
 	// from WB stage
 	input logic			i_unstall,
+	input [`ALEN-1:0]		i_wb_rd,
 
 	// to ID
 	output logic                    o_ex_ready,
@@ -28,6 +29,7 @@ module ex_stage (
 
 	// to MEM/WB
 	output logic			o_is_mem_staller,
+	output logic			o_is_wb_staller,
 	output interconnection_struct	o_ex2all
 );
 
@@ -70,14 +72,16 @@ module ex_stage (
 		.i_check_regs		(i_check_regs),
 		.i_rd			(i_id2all.rf_wr_addr), //i_id2all
 		.i_mem_rd		(i_mem_rd),
+		.i_wb_rd		(i_wb_rd),
 		.i_is_valid		(i_id2all.is_valid),   //i_id2all
 		.i_pipeline_stalled	(pipeline_stalled),
 		.o_stall		(stall),
 		.o_is_mem_staller	(o_is_mem_staller),
+		.o_is_wb_staller	(o_is_wb_staller),
 		.o_is_staller		(is_staller)
 	);
 
-	assign o_ex_ready = ~stall || i_unstall; // i_mem_ready ??
+	assign o_ex_ready = ~stall || (i_unstall && ~is_staller && ~o_is_mem_staller); // i_mem_ready ??
 	
 	always_ff @(posedge clk, negedge rst_n) begin
 		if(~rst_n) begin

@@ -6,6 +6,7 @@ module dm_store_controller(
 //	input logic				rst_n,
 
 	input interconnection_struct		i_struct,
+	input logic				i_is_mem_staller,
 
 	output interconnection_struct		o_struct,
 	output logic				o_miss_aligned_error
@@ -14,6 +15,10 @@ module dm_store_controller(
 	always_comb begin
 		
 		o_struct = i_struct;
+
+		if( i_struct.is_valid && i_is_mem_staller) begin
+			o_struct.staller = 1'b1;
+		end
 		
 		if( i_struct.mem_wr && i_struct.is_valid ) begin		// STORE HANDLING
 

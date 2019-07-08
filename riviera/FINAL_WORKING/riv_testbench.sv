@@ -39,6 +39,9 @@ module riv_testbench;
 	logic [`RNG_WR_DATA_REG] wb_wr_reg_data;
 	logic wb_wr_reg_en;
 	logic wb_ready;
+	logic [`ALEN-1:0] wb_rd;
+	logic is_wb_staller;
+	
 
 	if_stage if_test(
 
@@ -92,7 +95,9 @@ module riv_testbench;
   	      	.i_check_regs           (check_regs),
 		.i_mem_rd		(mem_rd),
         	.i_unstall              (unstall),
+		.i_wb_rd		(wb_rd),
 	
+		.o_is_wb_staller	(is_wb_staller),
 		.o_ex_ready		(ex_ready),
 		.o_is_mem_staller	(is_mem_staller),
 		.o_ex_jump_taken	(ex_jump_taken),
@@ -125,6 +130,9 @@ module riv_testbench;
 
 		.i_mem2all			(mem2all),
 
+		.i_is_wb_staller		(is_wb_staller),
+
+		.o_wb_rd			(wb_rd),
 		.o_wb_wr_reg_addr		(wb_wr_reg_addr),
 		.o_wb_wr_reg_data		(wb_wr_reg_data),
 		.o_wb_wr_reg_en			(wb_wr_reg_en),

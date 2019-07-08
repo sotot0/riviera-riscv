@@ -289,7 +289,9 @@ module id_stage(
 								id2all.alu_op = `DO_SRL;
 							end
 
-							`F7_SRAI: begin
+							`F7_SRAI: begin 
+								
+								//id2all.en_sign_ext = 1'b1;
 								id2all.alu_op = `DO_SRA;
 							end
 

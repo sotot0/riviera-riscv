@@ -151,7 +151,7 @@ module ex_alu (
 				end
 			
 				`DO_LUI: begin
-					o_struct.rf_wr_data = {i_struct.imm_gend[19:0], 12'b0};
+					o_struct.rf_wr_data = (64'(signed'( {i_struct.imm_gend[19:0], 12'b0})));
 				end
 			
 				`DO_AUIPC: begin

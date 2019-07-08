@@ -10,7 +10,7 @@ module mem_struct_reg(
 
 );
 	
-	always_ff @(posedge clk, negedge clk) begin
+	always_ff @(posedge clk, negedge rst_n) begin
 		
 		if(~rst_n) begin
 		
