@@ -1,5 +1,6 @@
 *.log
 *.vcd
 *.key
+*.tcl
 simv*
 /csrc*
