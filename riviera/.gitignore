@@ -2,5 +2,6 @@
 *.vcd
 *.key
 *.tcl
+*.tcl.old
 simv*
 /csrc*
