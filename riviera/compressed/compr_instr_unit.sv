@@ -52,6 +52,7 @@ parameter c2Sdsp         = 3'b111;
 always_comb begin
   o_ill_instr = 1'b0;
   o_is_compr= 1'b1;
+  o_instr =  {25'b0, OpImm};  //nop	 
   unique case(i_instr[1:0])
 
     //c0
@@ -64,6 +65,7 @@ always_comb begin
                  if (i_instr[12:5] == 8'b0) begin
                    o_ill_instr = 1'b1;
                  end
+		 else ;
                end
                
                c0Lw: begin
@@ -103,9 +105,10 @@ always_comb begin
                  if ( (i_instr[11:7]==5'b0) && ({i_instr[12],i_instr[6:2]}!=6'b0) ) begin
                    o_ill_instr = 1'b1;
                  end
-                 if  ( (i_instr[11:7]!=5'b0) && ({i_instr[12],i_instr[6:2]}==6'b0) ) begin
+		 else if  ( (i_instr[11:7]!=5'b0) && ({i_instr[12],i_instr[6:2]}==6'b0) ) begin
                    o_ill_instr = 1'b1;
-                 end                
+                 end 
+		 else ;               
                end
                
                c1Addiw: begin
@@ -114,6 +117,7 @@ always_comb begin
                  if (i_instr[11:7]==5'b0) begin
                    o_ill_instr = 1'b1;
                  end
+		 else ;
                end
 
                c1Li: begin
@@ -122,6 +126,7 @@ always_comb begin
                  if (i_instr[11:7]==5'b0) begin
                    o_ill_instr = 1'b1;
                  end
+		 else ;
                end
 
                c1LuiAddi16sp: begin
@@ -136,6 +141,7 @@ always_comb begin
                  if ( (i_instr[11:7]==5'b0) || ({i_instr[12],i_instr[6:2]}==6'b0) ) begin
                    o_ill_instr = 1'b1;  
                  end
+		 else ;
                end
 
 
@@ -145,10 +151,12 @@ always_comb begin
                    2'b00,2'b01: begin
 		     if   ({i_instr[12],i_instr[6:2]}==6'b0)  begin
                    	o_ill_instr = 1'b1;
+			o_instr =  {25'b0, OpImm};  //nop
                      end
 		     else begin
                        //srli rd ′,rd ′, shamt[5:0]
                        //srai rd ′, rd ′, shamt[5:0]
+                       o_ill_instr = 1'b0;
                        o_instr = { 1'b0, i_instr[10]  ,4'b0,  i_instr[12], i_instr[6:2] , 2'b01, i_instr[9:7], 3'b101, 2'b01, i_instr[9:7]  ,OpImm };
 		     end
                    end   
@@ -161,7 +169,6 @@ always_comb begin
  
                    2'b11: begin 
                      unique case ({i_instr[12], i_instr[6:5]})
-
                        3'b000: begin
                          //sub rd ′, rd ′, rs2 ′
                          o_instr = {  7'b0100000,  2'b01, i_instr[4:2], 2'b01, i_instr[9:7], 3'b000, 2'b01, i_instr[9:7]  ,Op };      
@@ -195,8 +202,16 @@ always_comb begin
                        3'b110, 3'b111: begin
                          o_ill_instr = 1'b1;
                        end
+		       
+		       default: ;
+
+
                      endcase
-                   end
+		   end
+		   
+		   default: ;
+
+
                  endcase 
                end
 
@@ -210,6 +225,8 @@ always_comb begin
                  //bne rs1 ′, x0, offset[8:1]
                  o_instr = {{4 {i_instr[12]}}, i_instr[6:5], i_instr[2], 5'b0,  2'b01, i_instr[9:7], 2'b00, i_instr[13], i_instr[11:10], i_instr[4:3],i_instr[12], Branch };
                end
+
+	       default: ;
 
 
            endcase
@@ -227,6 +244,7 @@ always_comb begin
                  if ( (i_instr[11:7]==5'b0) || ({i_instr[12],i_instr[6:2]}==6'b0) ) begin
                    o_ill_instr = 1'b1;
                  end
+		 else;
                end
 
                c2Lwsp: begin
@@ -235,6 +253,7 @@ always_comb begin
                  if  (i_instr[11:7]==5'b0)  begin
                    o_ill_instr = 1'b1;
                  end
+		 else;
 
                end
 
@@ -244,6 +263,7 @@ always_comb begin
                  if  (i_instr[11:7]==5'b0)  begin
                    o_ill_instr = 1'b1;
                  end  
+		 else;
                end
 
                c2JalrMvAdd: begin
@@ -255,6 +275,7 @@ always_comb begin
                        if  (i_instr[11:7]==5'b0)  begin
                          o_ill_instr = 1'b1;
                        end
+		       else ;
                      end
                      else begin
                        //add rd, x0, rs2 (mv)
@@ -262,6 +283,7 @@ always_comb begin
                        if  (i_instr[11:7]==5'b0)  begin
                          o_ill_instr = 1'b1;
                        end
+		       else ;
                      end                  
                    end
                    
@@ -272,6 +294,7 @@ always_comb begin
                        if  (i_instr[11:7]==5'b0)  begin
                          o_ill_instr = 1'b1;
                        end
+		       else ;
                      end
                      
                      else begin
@@ -280,9 +303,13 @@ always_comb begin
                        if  (i_instr[11:7]==5'b0)  begin
                           o_ill_instr = 1'b1;
                        end
+		       else ;
                      end
                       
                    end
+		   
+		   default: ;
+
                  endcase
 
                end

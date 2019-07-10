@@ -1,0 +1,74 @@
+
+example1:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000000000000 <_start-0x100>:
+	...
+
+0000000000000100 <_start>:
+ 100:	0000c117          	auipc	sp,0xc
+ 104:	ef810113          	addi	sp,sp,-264 # bff8 <_stack_start>
+ 108:	032000ef          	jal	ra,13a <main>
+ 10c:	0001                	nop
+
+000000000000010e <_exit_loop>:
+ 10e:	05000313          	li	t1,80
+ 112:	00a32023          	sw	a0,0(t1)
+ 116:	bfe5                	j	10e <_exit_loop>
+ 118:	0001                	nop
+ 11a:	0001                	nop
+ 11c:	0001                	nop
+ 11e:	0001                	nop
+ 120:	0001                	nop
+
+0000000000000122 <_putchar>:
+ 122:	04000313          	li	t1,64
+ 126:	00a30023          	sb	a0,0(t1)
+ 12a:	8082                	ret
+ 12c:	0001                	nop
+
+000000000000012e <_getcycle>:
+ 12e:	06000313          	li	t1,96
+ 132:	00032503          	lw	a0,0(t1)
+ 136:	8082                	ret
+ 138:	0001                	nop
+
+000000000000013a <main>:
+ 13a:	1101                	addi	sp,sp,-32
+ 13c:	ec22                	sd	s0,24(sp)
+ 13e:	1000                	addi	s0,sp,32
+ 140:	4785                	li	a5,1
+ 142:	fef42623          	sw	a5,-20(s0)
+ 146:	4789                	li	a5,2
+ 148:	fef42423          	sw	a5,-24(s0)
+ 14c:	fec42703          	lw	a4,-20(s0)
+ 150:	fe842783          	lw	a5,-24(s0)
+ 154:	9fb9                	addw	a5,a5,a4
+ 156:	fef42223          	sw	a5,-28(s0)
+ 15a:	67a1                	lui	a5,0x8
+ 15c:	0007a783          	lw	a5,0(a5) # 8000 <answer>
+ 160:	fe442703          	lw	a4,-28(s0)
+ 164:	9fb9                	addw	a5,a5,a4
+ 166:	0007871b          	sext.w	a4,a5
+ 16a:	67a1                	lui	a5,0x8
+ 16c:	00e7a023          	sw	a4,0(a5) # 8000 <answer>
+ 170:	67a1                	lui	a5,0x8
+ 172:	0007a783          	lw	a5,0(a5) # 8000 <answer>
+ 176:	853e                	mv	a0,a5
+ 178:	6462                	ld	s0,24(sp)
+ 17a:	6105                	addi	sp,sp,32
+ 17c:	8082                	ret
+
+Disassembly of section .data:
+
+0000000000008000 <answer>:
+    8000:	00000027          	0x27
+	...
+
+Disassembly of section .bss:
+
+000000000000800c <.bss>:
+    800c:	0000                	unimp
+	...

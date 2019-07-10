@@ -1,0 +1,114 @@
+
+auipc:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000000000000 <_start-0x100>:
+	...
+
+0000000000000100 <_start>:
+ 100:	0000c117          	auipc	sp,0xc
+ 104:	ef810113          	addi	sp,sp,-264 # bff8 <_stack_start>
+ 108:	038000ef          	jal	ra,140 <main>
+ 10c:	0001                	nop
+
+000000000000010e <_exit_loop>:
+ 10e:	05000313          	li	t1,80
+ 112:	00a32023          	sw	a0,0(t1)
+ 116:	bfe5                	j	10e <_exit_loop>
+ 118:	0001                	nop
+ 11a:	0001                	nop
+ 11c:	0001                	nop
+ 11e:	0001                	nop
+ 120:	0001                	nop
+
+0000000000000122 <_putchar>:
+ 122:	04000313          	li	t1,64
+ 126:	00a30023          	sb	a0,0(t1)
+ 12a:	8082                	ret
+ 12c:	0001                	nop
+
+000000000000012e <_getcycle>:
+ 12e:	06000313          	li	t1,96
+ 132:	00032503          	lw	a0,0(t1)
+ 136:	8082                	ret
+ 138:	0001                	nop
+ 13a:	0000                	unimp
+ 13c:	0000                	unimp
+	...
+
+0000000000000140 <main>:
+ 140:	00008517          	auipc	a0,0x8
+ 144:	ec050513          	addi	a0,a0,-320 # 8000 <_test_name>
+ 148:	04000613          	li	a2,64
+
+000000000000014c <.prname_next>:
+ 14c:	00050583          	lb	a1,0(a0)
+ 150:	00058663          	beqz	a1,15c <.prname_done>
+ 154:	c20c                	sw	a1,0(a2)
+ 156:	0505                	addi	a0,a0,1
+ 158:	ff5ff06f          	j	14c <.prname_next>
+
+000000000000015c <.prname_done>:
+ 15c:	02e00593          	li	a1,46
+ 160:	c20c                	sw	a1,0(a2)
+ 162:	c20c                	sw	a1,0(a2)
+ 164:	c20c                	sw	a1,0(a2)
+
+0000000000000166 <test_2>:
+ 166:	0001                	nop
+ 168:	00002517          	auipc	a0,0x2
+ 16c:	71c50513          	addi	a0,a0,1820 # 2884 <_stack_size+0x1884>
+ 170:	004005ef          	jal	a1,174 <test_2+0xe>
+ 174:	8d0d                	sub	a0,a0,a1
+ 176:	00002eb7          	lui	t4,0x2
+ 17a:	710e8e9b          	addiw	t4,t4,1808
+ 17e:	4e09                	li	t3,2
+ 180:	03d51463          	bne	a0,t4,1a8 <fail>
+
+0000000000000184 <test_3>:
+ 184:	00000013          	nop
+ 188:	ffffe517          	auipc	a0,0xffffe
+ 18c:	8fc50513          	addi	a0,a0,-1796 # ffffffffffffda84 <_stack_start+0xffffffffffff1a8c>
+ 190:	004005ef          	jal	a1,194 <test_3+0x10>
+ 194:	8d0d                	sub	a0,a0,a1
+ 196:	ffffeeb7          	lui	t4,0xffffe
+ 19a:	8f0e8e9b          	addiw	t4,t4,-1808
+ 19e:	4e0d                	li	t3,3
+ 1a0:	01d51463          	bne	a0,t4,1a8 <fail>
+ 1a4:	03c01663          	bne	zero,t3,1d0 <pass>
+
+00000000000001a8 <fail>:
+ 1a8:	04000513          	li	a0,64
+ 1ac:	04500593          	li	a1,69
+ 1b0:	05200613          	li	a2,82
+ 1b4:	04f00693          	li	a3,79
+ 1b8:	00a00713          	li	a4,10
+ 1bc:	c10c                	sw	a1,0(a0)
+ 1be:	c110                	sw	a2,0(a0)
+ 1c0:	c110                	sw	a2,0(a0)
+ 1c2:	c114                	sw	a3,0(a0)
+ 1c4:	c110                	sw	a2,0(a0)
+ 1c6:	c118                	sw	a4,0(a0)
+ 1c8:	00100513          	li	a0,1
+ 1cc:	f43ff06f          	j	10e <_exit_loop>
+
+00000000000001d0 <pass>:
+ 1d0:	04000513          	li	a0,64
+ 1d4:	04f00593          	li	a1,79
+ 1d8:	04b00613          	li	a2,75
+ 1dc:	00a00693          	li	a3,10
+ 1e0:	c10c                	sw	a1,0(a0)
+ 1e2:	c110                	sw	a2,0(a0)
+ 1e4:	c114                	sw	a3,0(a0)
+ 1e6:	00000533          	add	a0,zero,zero
+ 1ea:	f25ff06f          	j	10e <_exit_loop>
+
+Disassembly of section .data:
+
+0000000000008000 <_test_name>:
+    8000:	7561                	lui	a0,0xffff8
+    8002:	7069                	c.lui	zero,0xffffa
+    8004:	00000063          	beqz	zero,8004 <_test_name+0x4>
+	...

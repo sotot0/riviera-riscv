@@ -1,0 +1,15 @@
+Source the script appropriate for your RISCV architecture:
+- For RV32I
+  > source rv32i-settings.sh
+- For RV64I
+  > source rv64i-settings.sh
+- For RV64IC
+  > source rv64ic-settings.sh
+
+These scripts put in your path the RISC-V GCC 8.3.0 compiler and binutils
+- for 32-bit the compiler binary is: riscv32-unknown-elf-gcc
+- for 64-bit the compiler binary is: riscv64-unknown-elf-gcc
+
+Example codes can be found inside the example directories with ready makefiles that generate files for simulation (.dat files)
+Start from example0 which is the easiest and gradually move to more complex examples.
+The compliance tests folder will generate many tests to confirm that your RISC-V processor implements all instructions according to the spec (this is for advanced use in the end).

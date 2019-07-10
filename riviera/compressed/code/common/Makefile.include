@@ -1,0 +1,59 @@
+# MAKEFILE for HY523
+# Vassilis Papaefstathiou (papaef@ics.forth.gr)
+
+$(info RV_ARCH = $(RV_ARCH))
+
+ifeq ($(RV_ARCH), rv32i)
+  RVT_PREFIX=riscv32-unknown-elf
+else ifeq ($(RV_ARCH), rv64i)
+  RVT_PREFIX=riscv64-unknown-elf
+else ifeq ($(RV_ARCH), rv64ic)
+  RVT_PREFIX=riscv64-unknown-elf
+else
+  $(error "Incorrect RV_ARCH environmental variable! Please source the appropriate script.")
+endif
+
+COMMONDIR=../common
+CC=$(RVT_PREFIX)-gcc
+OBJD=$(RVT_PREFIX)-objdump
+OBJC=$(RVT_PREFIX)-objcopy
+OD=od
+
+IMEM_START=0
+IMEM_SIZE=16384
+IMEM_END=$(shell expr $(IMEM_START) + $(IMEM_SIZE) )
+DMEM_START=32768
+DMEM_SIZE=16384
+DMEM_END=$(shell expr $(DMEM_START) + $(DMEM_SIZE) )
+
+COPT?= -O0
+CFLAGS_EXT?=
+
+CFLAGS+= $(COPT) $(CFLAGS_EXT)
+LDFLAGS= -nostartfiles -T $(COMMONDIR)/sim.ld
+
+SRC_FILES?=
+BINARY?=
+
+ifeq ($(BINARY),)
+all:
+else
+all: compile
+endif
+
+compile: clean $(BINARY) $(BINARY).objd simfiles
+
+$(BINARY): $(COMMONDIR)/crt0.s $(SRC_FILES)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+
+$(BINARY).objd: $(BINARY)
+	$(OBJD) -D $< > $@
+
+simfiles: $(BINARY)
+	$(OBJC) -O binary -j .text --gap-fill 0 --pad-to $(IMEM_END) $< $<.text.bin
+	$(OBJC) -O binary -j .rodata -j .data -j .bss --pad-to $(DMEM_END) --gap-fill 0x0 $< $<.data.bin
+	$(OD) -An -t x4 -w4 -v $<.text.bin > $<.imem.dat
+	$(OD) -An -t x4 -w4 -v $<.data.bin > $<.dmem.dat
+
+clean:
+	\rm -f $(BINARY) $(BINARY).objd $(BINARY).*.bin $(BINARY).*.dat
